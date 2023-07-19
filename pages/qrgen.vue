@@ -51,7 +51,8 @@
                             <input v-else checked disabled type="checkbox" name="useComments" id="useComments" v-model="useComments" class="rounded-full border-gray-300">
                         </div>
             
-                        <input type="text" name="comments" id="comments" class="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]">
+                        <input v-if="other!='Otro (Escribir en comentarios)'" type="text" name="comments" id="comments" class="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]">
+                        <input v-else required type="text" name="comments" id="comments" class="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]">
                     </div>
                     <button
                         class="w-full bg-teal-500 text-gray-700 text-sm font-bold py-2 px-4 rounded-full hover:bg-[#3f51b5] hover:text-white transition duration-300"
@@ -85,7 +86,7 @@
     let useComments = ref(false)
     let other = ref(false)
     try{
-        $generalStore.getGeneralData()
+        await $generalStore.getGeneralData()
     }catch(e){
         console.log(e)
     }

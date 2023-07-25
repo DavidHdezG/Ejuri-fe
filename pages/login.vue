@@ -1,4 +1,19 @@
-<script lang="ts" setup></script>
+<script setup>
+const { $userStore } = useNuxtApp();
+let user = ref("");
+let password = ref("");
+
+const login = async () => {
+  try {
+    $userStore.login(user.value, password.value);
+    //navigateTo("/");
+  } catch (e) {
+    console.log(e);
+  }
+
+
+};
+</script>
 
 <template>
   <div class="h-screen h-screen flex items-center justify-center">
@@ -15,12 +30,14 @@
         </div>
         <div class="flex flex-col items-center justify-center">
           <input
+            v-model="user"
             required
             type="text"
             placeholder="Usuario"
             class="border border-gray-300 text-center rounded-full focus:outline-none focus:border-[#A3DEE0] p-2 m-2"
           />
           <input
+            v-model="password"
             required
             type="password"
             placeholder="Contraseña"
@@ -29,6 +46,7 @@
         </div>
         <div class="flex flex-col items-center justify-center">
           <button
+            @click="login()"
             class="bg-teal-500 text-gray-700 text-sm font-bold py-2 px-4 rounded-full hover:bg-[#3f51b5] hover:text-white transition duration-300"
           >
             Iniciar sesión

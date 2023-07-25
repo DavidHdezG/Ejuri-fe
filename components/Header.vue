@@ -4,11 +4,11 @@
         <div id="title" class="ml-5 text-2xl font-bold text-gray-700">
             <span>{{ pageTitle }}</span>
         </div>
-        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center space-x-3 drop-down" >
+        <button @click="logout()" id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center space-x-3 drop-down" >
             <Icon name="material-symbols:account-circle" size="40"/>
             <div class="flex flex-col items-start text-sm">
-                <span class="font-bold">Example</span>
-                <span class="text-xs">Example@blucapital.mx</span>
+                <span class="font-bold">{{ $userStore.name }}</span>
+                <span class="text-xs">{{ $userStore.email }}</span>
             </div>
             
         </button>
@@ -28,6 +28,15 @@
 <script  setup>
     const props = defineProps(['pageTitle'])
     const { pageTitle } = toRefs(props)
+    const { $userStore } = useNuxtApp();
 
-
+    const logout = async () => {
+        try {
+            $userStore.logout();
+            //navigateTo("/");
+        } catch (e) {
+            console.log(e);
+        }
+        
+    }
 </script>

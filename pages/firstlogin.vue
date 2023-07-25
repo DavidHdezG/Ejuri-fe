@@ -1,16 +1,18 @@
-<script  setup>
-    let showPass=ref(false)
+<script setup>
+let showPass = ref(false);
+definePageMeta({
+  middleware: ["auth"],
+});
 
-
-    const togglePass=()=>{
-        showPass.value=!showPass.value
-        var x = document.getElementById("password");
-        if (x.type === "password") {
-            x.type = "text";
-        } else {
-            x.type = "password";
-        }
-    }
+const togglePass = () => {
+  showPass.value = !showPass.value;
+  var x = document.getElementById("password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+};
 </script>
 
 <template>
@@ -27,7 +29,6 @@
           <span class="text-xl font-semibold">Cambia tu contraseña</span>
         </div>
         <div class="flex flex-col items-center justify-center">
-          
           <input
             required
             id="password"
@@ -36,8 +37,14 @@
             class="border border-gray-300 text-center rounded-full focus:outline-none focus:border-[#A3DEE0] p-2 m-2"
           />
           <button @click="togglePass()">
-            <Icon name="ph:eye-closed-thin" class="" v-if="!showPass" size="22" color="#888888"/>
-            <Icon name="ph:eye-light" v-else size="22" color="#888888"/>
+            <Icon
+              name="ph:eye-closed-thin"
+              class=""
+              v-if="!showPass"
+              size="22"
+              color="#888888"
+            />
+            <Icon name="ph:eye-light" v-else size="22" color="#888888" />
           </button>
           <input
             required

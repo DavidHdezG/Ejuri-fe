@@ -1,4 +1,5 @@
 <script setup>
+
 import MainLayout from "@/layouts/MainLayout.vue";
 let s = ref(150);
 let g = ref(10);
@@ -9,6 +10,12 @@ let whoxd = ref(null);
 const who = (nombre)=>{
     whoxd.value = nombre;
 }
+
+definePageMeta({
+  middleware: [
+    'auth'
+  ],
+});
 </script>
 
 <template>
@@ -19,7 +26,7 @@ const who = (nombre)=>{
         Lista de documentos escaneados
       </h1>
     </div>
-    <div class="gallery grid gap-2.5 aspect-video">
+    <div class="gallery grid gap-2.5 aspect-video hidden">
       <div>
         <img @mouseenter="who('hola')"
           src="https://picsum.photos/id/1028/300/300"
@@ -71,6 +78,21 @@ const who = (nombre)=>{
       <div>
         <img
         @mouseenter="who('hola8')"
+          src="https://picsum.photos/id/1047/300/300"
+          alt="inside a town between two big buildings"
+        />
+        <span class="txt">hola</span>
+      </div>
+      <div>
+        <img
+        @mouseenter="who('hola9')"
+          src="https://picsum.photos/id/110/300/300"
+          alt="a cool landscape"
+        />
+      </div>
+      <div>
+        <img
+        @mouseenter="who('hola10')"
           src="https://picsum.photos/id/1047/300/300"
           alt="inside a town between two big buildings"
         />

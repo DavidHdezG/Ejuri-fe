@@ -22,7 +22,9 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
-    "pinia": "^2.1.4"
+    "jspdf": "^2.5.1",
+    "pinia": "^2.1.4",
+    "qrcode": "^1.5.3"
   },
   "overrides": {
     "vue": "latest"

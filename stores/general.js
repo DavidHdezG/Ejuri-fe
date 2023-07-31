@@ -6,6 +6,7 @@ const $axios = axios().provide.axios
 
 export const useGeneralStore = defineStore('general',{
     state:() => ({
+        isLoading: false,
         isLogged: false,
         pyme: null,
         floreser: null,
@@ -16,16 +17,32 @@ export const useGeneralStore = defineStore('general',{
         category: null,
     }),
     actions:{
-        async getGeneralData(){
-            this.$state.category = ['PYME', 'FLORESER', 'BURO','MUTUOS','LABORAL','ALIANZAS Y PROVEEDORES'];
-            this.$state.pyme = ['Contrato', 'Pagaré','Hoja de identificación','Anexos PLD', 'Acuse Pagaré', 'Supervisión y Seguimiento','Caratula de Crédito', ' Generales','Endoso en Garantía','Cancelación de hipoteca','Adendum','Convenio modificatorio',' Carta Buró','Otro (Escribir en comentarios)'];
-            this.$state.floreser = ['Contrato','Pagaré','Anexos PLD','Acuse Pagaré','Generales','Endoso en Garantía','Factura','Hoja de identificación','Caratula de Crédito','Carta Buró','Otro (Escribir en comentarios)'];
-            this.$state.buro = ['Carta de autorización PM','Carta de autorizaciónPF' ,'Otro (Escribir en comentarios)'];
-            this.$state.mutuos = ['Contrato','Adendum Beneficiario','Convenio Modificatorio','Convenio de terminación','Otro (Escribir en comentarios)'];
-            this.$state.laboral = ['Contrato sujeto a prueba','Convenio de Confidencialidad','Declaración de nuevo ingreso','Carta de buró','Identificación','Comprobante de domicilio','CSF','NSS','Carta de no antecedentes penales','Otro (Escribir en comentarios)'];
-            this.$state.alianzasProveedores = ['Contrato','Convenio de Confidencialidad','Convenio de Terminación','Otro (Escribir en comentarios)'];
+        async getDocumentTypeData(){
+            const { data } = await $axios.get('/documents/type/2')
+            this.$state.pyme = data
+            const { data: data2 } = await $axios.get('/documents/type/3')
+            this.$state.floreser = data2
+            const { data: data3 } = await $axios.get('/documents/type/4')
+            this.$state.buro = data3
+            const { data: data4 } = await $axios.get('/documents/type/5')
+            this.$state.mutuos = data4
+            const { data: data5 } = await $axios.get('/documents/type/6')
+            this.$state.laboral = data5
+            const { data: data6 } = await $axios.get('/documents/type/7')
+            this.$state.alianzasProveedores = data6
+        },
+        async getCategoryData(){
+            const { data } = await $axios.get('/category')
+            this.$state.category = data
+        },
 
+        start(){
+            this.$state.isLoading = true
+        },
+        stop(){
+            this.$state.isLoading = false
         }
+
     },
     persist: true,
 });

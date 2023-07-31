@@ -16,5 +16,6 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  spaLoadingTemplate: './components/Loading.vue',
   
 })

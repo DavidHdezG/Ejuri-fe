@@ -6,6 +6,6 @@
 
 <template>
     <MainLayout :pageTitle="pageTitle">
-
+        <Loading/>
     </MainLayout>
 </template>

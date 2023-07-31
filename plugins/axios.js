@@ -2,7 +2,8 @@ import axios from "axios";
 
 export default defineNuxtPlugin((NuxtApp)=> {
     axios.defaults.withCredentials = true;
-    axios.defaults.baseURL = 'http://localhost:3000';
+    axios.defaults.baseURL = 'https://ejuri-be.onrender.com';
+
     return {
         provide:{
             axios: axios

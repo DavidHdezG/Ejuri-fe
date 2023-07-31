@@ -3,12 +3,12 @@
     <div class="bg-transparent flex w-full pl-4 pt-4 pr-8 space-x-4">
       <a
         href="qrgen/documents"
-        class="bg-[#D1D5DB] text-gray-700 text-sm font-bold py-2 px-4 rounded-2xl hover:bg-teal-500 hover:text-white transition duration-300"
+        class="bg-[#D1D5DB] drop-shadow-md hover:drop-shadow-xl text-gray-700 text-sm font-bold py-2 px-4 rounded-2xl hover:bg-teal-500 hover:text-white transition duration-300"
         >Documentos</a
       >
       <a
         href="qrgen/historic"
-        class="bg-[#D1D5DB] text-gray-700 text-sm font-bold py-2 px-4 rounded-2xl hover:bg-teal-500 hover:text-white transition duration-300"
+        class="bg-[#D1D5DB] drop-shadow-md hover:drop-shadow-xl text-gray-700 text-sm font-bold py-2 px-4 rounded-2xl hover:bg-teal-500 hover:text-white transition duration-300"
         >Histórico</a
       >
     </div>
@@ -28,8 +28,8 @@
             id="category"
             class="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]"
           >
-            <option v-for="item in $generalStore.category" :value="item">
-              {{ item }}
+            <option v-for="item in $generalStore.category" :value="item.name">
+              {{ item.name }}
             </option>
           </select>
         </div>
@@ -44,11 +44,21 @@
             <input
               @input="updateFileName()"
               v-model="name"
+              autocomplete="off"
+              list="nameList"
               type="text"
               name="name"
               id="name"
-              class="indent-2 w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]"
+              class="indent-2 w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0] "
             />
+            <datalist id="nameList">
+              <!-- <option v-for="item in $generalStore.names" :value="item">
+                {{ item }}
+              </option> -->
+              <option value="Ejuri"></option>
+              <option value="Blu"></option>
+              <option value="Progra"></option>
+            </datalist>
           </div>
           <div class="mb-4">
             <label
@@ -80,50 +90,50 @@
               <option
                 v-if="category === 'PYME'"
                 v-for="item in $generalStore.pyme"
-                :value="item"
-                :key="item"
+                :value="item.type"
+                :key="item.type"
               >
-                {{ item }}
+                {{ item.type }}
               </option>
               <option
                 v-if="category === 'FLORESER'"
                 v-for="item in $generalStore.floreser"
-                :value="item"
-                :key="item"
+                :value="item.type"
+                :key="item.type"
               >
-                {{ item }}
+                {{ item.type }}
               </option>
               <option
                 v-if="category === 'BURO'"
                 v-for="item in $generalStore.buro"
-                :value="item"
-                :key="item"
+                :value="item.type"
+                :key="item.type"
               >
-                {{ item }}
+                {{ item.type }}
               </option>
               <option
                 v-if="category === 'MUTUOS'"
                 v-for="item in $generalStore.mutuos"
-                :value="item"
-                :key="item"
+                :value="item.type"
+                :key="item.type"
               >
-                {{ item }}
+                {{ item.type }}
               </option>
               <option
                 v-if="category === 'LABORAL'"
                 v-for="item in $generalStore.laboral"
-                :value="item"
-                :key="item"
+                :value="item.type"
+                :key="item.type"
               >
-                {{ item }}
+                {{ item.type }}
               </option>
               <option
                 v-if="category === 'ALIANZAS Y PROVEEDORES'"
                 v-for="item in $generalStore.alianzasProveedores"
-                :value="item"
-                :key="item"
+                :value="item.type"
+                :key="item.type"
               >
-                {{ item }}
+                {{ item.type }}
               </option>
             </select>
           </div>
@@ -141,7 +151,7 @@
                 name="useComments"
                 id="useComments"
                 v-model="useComments"
-                class="rounded-full border-gray-300"
+                class="rounded-full border-gray-200 "
               />
               <input
                 @change="updateFileName()"
@@ -177,11 +187,11 @@
             />
           </div>
           <button
-            class="w-full bg-teal-500 text-gray-700 text-sm font-bold py-2 px-4 rounded-full hover:bg-[#3f51b5] hover:text-white transition duration-300"
+            class="w-full drop-shadow-md hover:drop-shadow-xl bg-teal-500 text-gray-700 text-sm font-bold py-2 px-4 rounded-full hover:bg-[#3f51b5] hover:text-white transition duration-300"
             type="submit"
             @click="generate()"
           >
-            Generar QR
+            Guardar
           </button>
         </form>
       </div>
@@ -197,15 +207,15 @@
           <div class="flex items-center content-center pb-5">
             <button class="" @click="download()">
               <Icon
-                color="#009688"
+              
                 name="material-symbols:download-for-offline-rounded"
                 size="30"
-                class=""
+                class="text-teal-500 hover:text-[#3f51b5] transition duration-300 drop-shadow-md hover:drop-shadow-xl"
               />
             </button>
             <button class="" @click="print()">
               <Icon
-                color="#009688"
+                class="text-teal-500 hover:text-[#3f51b5] transition duration-300 drop-shadow-md hover:drop-shadow-xl"
                 name="material-symbols:print-rounded"
                 size="30"
               />
@@ -234,7 +244,9 @@ let category = ref("");
 let useComments = ref("");
 let other = ref("");
 try {
-  await $generalStore.getGeneralData();
+  $generalStore.start();
+  await $generalStore.getDocumentTypeData();
+  await $generalStore.getCategoryData();
 } catch (e) {
   console.log(e);
 }
@@ -243,6 +255,7 @@ let folio = ref("");
 let comments = ref("");
 const data = ref("");
 const image = ref(defaultQr);
+$generalStore.stop();
 const updateFileName = async () => {
   if (useComments.value) {
     data.value = `${category.value}/${name.value}/${folio.value}/${other.value}/${comments.value}/${getDate()}`;
@@ -337,6 +350,6 @@ const getDate= ()=>{
   const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Se agrega +1 al mes porque los meses se representan de 0 a 11
   const anio = fecha.getFullYear().toString().slice(-2);
 
-  return `${dia}/${mes}/${anio}`
+  return `${dia}-${mes}-${anio}`
 }
 </script>

@@ -14,7 +14,7 @@
                     <SideMenuItem iconString='Inicio'/>
                 </NuxtLink>
                 <NuxtLink to="/qrgen">
-                    <SideMenuItem iconString='Digitalización'/>
+                    <SideMenuItem iconString='Digitalización' />
                 </NuxtLink>
             </div>
         </div>

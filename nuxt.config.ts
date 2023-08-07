@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import vuetify from 'vite-plugin-vuetify'
 export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: true },
@@ -9,7 +10,10 @@ export default defineNuxtConfig({
     '@pinia-plugin-persistedstate/nuxt',
 
   ],
-  css: ['~/assets/css/main.css'],
+  build: {
+    transpile: ['vuetify'],
+  },
+  css: ['vuetify/styles','~/assets/css/main.css','@mdi/font/css/materialdesignicons.min.css'],
   postcss: {
     plugins: {
       tailwindcss: {},

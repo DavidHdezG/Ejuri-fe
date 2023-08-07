@@ -1,5 +1,5 @@
 <script setup>
-
+import TableLayout from "@/layouts/TableLayout.vue";
 import MainLayout from "@/layouts/MainLayout.vue";
 const { $generalStore } = useNuxtApp()
 $generalStore.start();
@@ -13,8 +13,8 @@ definePageMeta({
 </script>
 
 <template>
-  <MainLayout page-title="Lista de documentos escaneados">
+  <TableLayout page-title="Lista de documentos escaneados">
     
-  </MainLayout>
+  </TableLayout>
 </template>
 

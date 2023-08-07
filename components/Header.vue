@@ -1,6 +1,6 @@
 
 <template>
-    <div id="header" class="flex justify-between max-h-[100px]  p-8  bg-transparent text-gray-700 shadow-md ">
+    <div id="header" class="flex justify-between max-h-[100px] p-8  bg-transparent text-gray-700 shadow-md ">
         <div id="title" class="ml-5 text-2xl font-bold text-gray-700">
             <span>{{ pageTitle }}</span>
         </div>

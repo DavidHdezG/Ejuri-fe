@@ -6,6 +6,19 @@ const $axios = axios().provide.axios
 
 export const useGeneralStore = defineStore('general',{
     state:() => ({
+        documentToEdit: {
+            id: null,
+            type: null,
+            category: {
+                id: null,
+                name: null,
+            },
+            duplicate: null,
+        },
+        overlayEdit: false,
+        edited: false,
+        overlayQr: false,
+        qrToView: null,
         isLoading: false,
         isLogged: false,
         pyme: null,
@@ -14,7 +27,13 @@ export const useGeneralStore = defineStore('general',{
         mutuos: null,
         laboral: null,
         alianzasProveedores: null,
-        category: null,
+        category: [{
+            id: null,
+            name: null,
+        }],
+
+        documentList: null,
+        qrhistoricList: null,
     }),
     actions:{
         async getDocumentTypeData(){
@@ -30,12 +49,48 @@ export const useGeneralStore = defineStore('general',{
             this.$state.laboral = data5
             const { data: data6 } = await $axios.get('/documents/type/7')
             this.$state.alianzasProveedores = data6
+            console.log(this.$state.pyme)
         },
         async getCategoryData(){
             const { data } = await $axios.get('/category')
             this.$state.category = data
         },
+        async getDocumentList(){
+            const { data } = await $axios.get('/documents')
+            this.$state.documentList = data
+        },
+        async getDocumentToEdit(id){
+            const { data } = await $axios.get(`/documents/${id}`)
+            
+            this.$state.documentToEdit = data
+            console.log(this.$state.documentToEdit)
+        },
+        async getQrToView(id){
+            const { data } = await $axios.get(`/qrhistoric/${id}`)
+            this.$state.qrToView = data.qr
+        },
+        async getQrHistoricData(){
+            const { data } = await $axios.get('/qrhistoric')
+            this.$state.qrhistoricList = data
+        },
+        async saveHistoric (data){
+            return await $axios.post('/qrhistoric', data)
+            
+        },
 
+        async editCategory(id, name){
+            await $axios.patch(`/category/${id}`,{
+                name: name
+            })
+            this.getCategoryData()
+        },
+        async editDocument(id, name, category, duplicate){
+            await $axios.patch(`/documents/${id}`,{
+                type: name,
+                category: category,
+                duplicate: duplicate
+            })            
+        },
         start(){
             this.$state.isLoading = true
         },

@@ -3,7 +3,8 @@
 </script>
 
 <template>
-    <div id = "sidebar" class="flex flex-col justify-between bg-white h-screen shadow-xl z-10 px-3 w-30 md:w-60 lg:w-60">
+    <div class="h-screen w-[240px] container"></div>
+    <div id = "sidebar" class="fixed flex flex-col justify-between bg-white h-screen shadow-xl z-10 px-3 w-30 md:w-60 lg:w-60">
         <div class="space-y-10  mt-5">
             <div class="space-y-0 flex flex-col items-center" id="logo">
                 <nuxt-img src="logo.png" width="100px" class="mx-auto"/>

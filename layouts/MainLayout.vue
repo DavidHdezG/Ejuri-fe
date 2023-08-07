@@ -12,6 +12,7 @@
 </template>
 
 <script  setup>
+const { $generalStore } = useNuxtApp();
     import Loading from '../components/Loading.vue';
     import SideBar from '../components/SideBar.vue'
     import Header from '../components/Header.vue'

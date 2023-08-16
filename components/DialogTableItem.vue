@@ -1,17 +1,18 @@
 <script setup>
 const { $generalStore } = useNuxtApp();
 
+let create = ref(false);
 let id = ref();
 let type = ref();
 let category = ref();
-let duplicate = ref();
+let duplicate = ref(false);
 /* try {
   $generalStore.getCategoryData();
 } catch (e) {
   console.log(e);
 } */
 
-const edit = async () => {
+const editDoc = async () => {
   try {
     await $generalStore.editDocument(
       id.value,
@@ -20,12 +21,42 @@ const edit = async () => {
       duplicate.value
     );
     $generalStore.edited = true;
-    console.log($generalStore.edited + " edited")
     $generalStore.overlayEdit = false;
   } catch (e) {
     console.log(e);
   }
 };
+
+const saveDoc = async () => {
+  try {
+    console.log(id.value)
+    console.log(type.value)
+    console.log($generalStore.category.find((item) => item.id === category.value).id)
+    console.log(duplicate.value)
+    await $generalStore.saveDocument(
+      id.value,
+      type.value,
+      $generalStore.category.find((item) => item.id === category.value).id,
+      duplicate.value
+    );
+    $generalStore.edited = true;
+    $generalStore.overlayEdit = false;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const cancel = () => {
+  $generalStore.overlayEdit = false;
+  $generalStore.creatingDocument = false;
+};
+watch(
+  () => $generalStore.creatingDocument,
+  () => {
+    console.log(create.value + " create");
+    create.value = $generalStore.creatingDocument;
+  }
+);
 watch(
   () => $generalStore.documentToEdit,
   () => {
@@ -53,12 +84,25 @@ watch(
       </template> -->
       <v-card>
         <div class="flex flex-col items-center space-y-4 py-6 px-4">
-          <div class="text-lg">
+          <div class="text-lg" v-if="create">
+            <span>Agregar documento</span>
+          </div>
+          <div class="text-lg" v-else>
             <span>Editar {{ id }}</span>
           </div>
           <div class="" id="formid">
             <div class="flex flex-col items-center justify-center space-y-4">
               <div class="flex flex-col items-center justify-center">
+                <div class="pl-4 w-full" v-if="create">
+                  <label for="Tipo">ID:</label>
+                  <input
+                    id="Id"
+                    v-model="id"
+                    required
+                    type="text"
+                    class="border border-gray-300 rounded focus:outline-none focus:border-[#A3DEE0] p-2 m-2"
+                  />
+                </div>
                 <div class="pl-4 w-full">
                   <label for="Tipo">Tipo:</label>
                   <input
@@ -66,7 +110,6 @@ watch(
                     v-model="type"
                     required
                     type="text"
-                    placeholder="Usuario"
                     class="border border-gray-300 rounded focus:outline-none focus:border-[#A3DEE0] p-2 m-2"
                   />
                 </div>
@@ -102,13 +145,21 @@ watch(
               </div>
               <div class="flex items-center justify-center pb-4 space-x-4">
                 <button
-                  @click="$generalStore.overlayEdit = false"
+                  @click="cancel()"
                   class="bg-teal-500 text-gray-700 text-sm font-bold py-2 px-4 rounded-full hover:bg-[#3f51b5] hover:text-white transition duration-300"
                 >
                   Cancelar
                 </button>
                 <button
-                  @click="edit()"
+                  v-if="!create"
+                  @click="editDoc()"
+                  class="bg-teal-500 text-gray-700 text-sm font-bold py-2 px-4 rounded-full hover:bg-[#3f51b5] hover:text-white transition duration-300"
+                >
+                  Guardar
+                </button>
+                <button
+                  v-else
+                  @click="saveDoc()"
                   class="bg-teal-500 text-gray-700 text-sm font-bold py-2 px-4 rounded-full hover:bg-[#3f51b5] hover:text-white transition duration-300"
                 >
                   Guardar

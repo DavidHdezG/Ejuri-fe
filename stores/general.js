@@ -21,6 +21,7 @@ export const useGeneralStore = defineStore('general',{
         qrToView: null,
         isLoading: false,
         isLogged: false,
+        creatingDocument: false,
         pyme: null,
         floreser: null,
         buro: null,
@@ -59,6 +60,17 @@ export const useGeneralStore = defineStore('general',{
             const { data } = await $axios.get('/documents')
             this.$state.documentList = data
         },
+        async emptyDocumentToEdit(){
+            this.$state.documentToEdit = {
+                id: null,
+                type: null,
+                category: {
+                    id: null,
+                    name: null,
+                },
+                duplicate: null,
+            }
+        },
         async getDocumentToEdit(id){
             const { data } = await $axios.get(`/documents/${id}`)
             
@@ -90,6 +102,14 @@ export const useGeneralStore = defineStore('general',{
                 category: category,
                 duplicate: duplicate
             })            
+        },
+        async saveDocument(id,name, category, duplicate){
+            return await $axios.post('/documents',{
+                id: id,
+                type: name,
+                category: category,
+                duplicate: !duplicate ? false : true 
+            })
         },
         start(){
             this.$state.isLoading = true

@@ -239,7 +239,7 @@ const getDate = () => {
       >
     </div>
     <div class="bg-transparent flex justify-evenly items-center h-full">
-      <div class="bg-white drop-shadow-2xl rounded-full w-96">
+      <form @submit.prevent="saveHistoric()" class="bg-white drop-shadow-2xl rounded-full w-96">
         <div class="w-full mx-auto bg-white p-8 rounded-t-[30px]">
           <label
             for="category"
@@ -411,12 +411,12 @@ const getDate = () => {
           </div>
           <button
             class="w-full drop-shadow-md hover:drop-shadow-xl bg-teal-500 text-gray-700 text-sm font-bold py-2 px-4 rounded-full hover:bg-[#3f51b5] hover:text-white transition duration-300"
-            @click="saveHistoric()"
+
           >
             Guardar
           </button>
         </div>
-      </div>
+      </form>
 
       <div class="flex flex-col space-y-6 items-center">
         <div id="alerts">

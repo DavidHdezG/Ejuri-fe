@@ -125,9 +125,19 @@ const searchData = (input) => {
   }
   resetData(temp);
 };
+
+const add = async () => {
+  $generalStore.emptyDocumentToEdit();
+  $generalStore.creatingDocument = true;
+  $generalStore.overlayEdit = true;
+
+};
+
 const edit = async (id) => {
   await $generalStore.getDocumentToEdit(id);
+  $generalStore.creatingDocument = false;
   $generalStore.overlayEdit = true;
+
 };
 
 const viewQR = async (id) => {
@@ -166,6 +176,7 @@ watch(
       </div>
       <div>
         <button
+          @click="add()"
           v-if="$route.name === 'qrgen-documents'"
           class="items-center text-xs font-medium text-teal-500 transition-colors duration-200 sm:text-sm hover:text-[#3f51b5]"
         >
@@ -276,14 +287,14 @@ watch(
     </div>
 
     <div class="mt-6 mb-6 sm:flex sm:items-center sm:justify-between">
-      <div class="text-sm text-gray-500">
+      <div class="text-sm text-gray-500 ">
         Página
         <span class="font-medium text-gray-700"
           >{{ currentPage }} de {{ totalPages }}</span
         >
       </div>
 
-      <div class="flex items-center mt-4 gap-x-4 sm:mt-0">
+      <div class="flex items-center gap-x-4 sm:mt-0">
         <button
           @click="PreviousPage()"
           class="flex items-center justify-between w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"

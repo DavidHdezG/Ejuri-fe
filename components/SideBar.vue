@@ -15,9 +15,10 @@
                     <SideMenuItem iconString='Inicio'/>
                 </NuxtLink>
                 <NuxtLink to="/qrgen">
-                    <SideMenuItem iconString='Digitalización' />
+                    <SideMenuDropdown iconString='Digitalización' />
                 </NuxtLink>
             </div>
+            
         </div>
         <div class="flex mx-auto mb-5" id="blu">
             <nuxt-img class="mx-auto" src="blu.png" width="100px"/>

@@ -3,7 +3,7 @@ import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 const defaultQr = "/qrcode.png";
 import MainLayout from "../../layouts/MainLayout.vue";
-const { $generalStore } = useNuxtApp();
+const { $generalStore, $tablesStore } = useNuxtApp();
 const { $userStore } = useNuxtApp();
 definePageMeta({
   middleware: ["auth"],
@@ -16,8 +16,8 @@ let useComments = ref("");
 let other = ref("");
 try {
   $generalStore.start();
-  await $generalStore.getDocumentList();
-  await $generalStore.getCategoryData();
+  await $tablesStore.getDocumentList();
+  await $tablesStore.getCategoryData();
 } catch (e) {
   console.log(e);
 }
@@ -25,32 +25,32 @@ let name = ref("");
 let folio = ref("");
 let comments = ref("");
 let pyme = ref(
-  $generalStore.documentList
+  $tablesStore.documentList
     .filter((item) => item.category.name === "PYME")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
 let floreser = ref(
-  $generalStore.documentList
+  $tablesStore.documentList
     .filter((item) => item.category.name === "FLORESER")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
 let mutuos = ref(
-  $generalStore.documentList
+  $tablesStore.documentList
     .filter((item) => item.category.name === "MUTUOS")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
 let laboral = ref(
-  $generalStore.documentList
+  $tablesStore.documentList
     .filter((item) => item.category.name === "LABORAL")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
 let buro = ref(
-  $generalStore.documentList
+  $tablesStore.documentList
     .filter((item) => item.category.name === "BURO")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
 let alianzas = ref(
-  $generalStore.documentList
+  $tablesStore.documentList
     .filter((item) => item.category.name === "ALIANZAS Y PROVEEDORES")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
@@ -70,7 +70,7 @@ const updateFileName = async () => {
   }
   try {
     const qrcode = await QRCode.toDataURL(data.value);
-    image.value = /* 'data:image/jpeg;base64, '+ */ qrcode;
+    image.value = qrcode;
   } catch (err) {
     console.error(err);
   }
@@ -95,10 +95,9 @@ const saveHistoric = async () => {
   const data = {
     client: name.value, // TEMPORAL
     folio: folio.value,
-    category: $generalStore.category.find(
-      (item) => item.name === category.value
-    ).id,
-    document: $generalStore.documentList.find(
+    category: $tablesStore.category.find((item) => item.name === category.value)
+      .id,
+    document: $tablesStore.documentList.find(
       (item) => item.type === other.value
     ).id,
     user: $userStore.id,
@@ -106,7 +105,7 @@ const saveHistoric = async () => {
     qr: image.value,
   };
   try {
-    const res = await $generalStore.saveHistoric(data);
+    const res = await $tablesStore.saveHistoric(data);
     if (res.status === 201) {
       alertType.value = 1;
       alertMsg.value = "Guardado correctamente";
@@ -227,19 +226,26 @@ const getDate = () => {
 <template class="flex">
   <MainLayout page-title="Digitalización de documentos">
     <div class="bg-transparent flex w-full pl-4 pt-4 pr-8 space-x-4">
-      <a
-        href="qrgen/documents"
-        class="bg-[#D1D5DB] drop-shadow-md hover:drop-shadow-xl text-gray-700 text-sm font-bold py-2 px-4 rounded-2xl hover:bg-teal-500 hover:text-white transition duration-300"
-        >Documentos</a
-      >
-      <a
-        href="qrgen/historic"
-        class="bg-[#D1D5DB] drop-shadow-md hover:drop-shadow-xl text-gray-700 text-sm font-bold py-2 px-4 rounded-2xl hover:bg-teal-500 hover:text-white transition duration-300"
-        >Histórico</a
-      >
+      <NuxtLink to="/qrgen/documents">
+        <div
+          class="bg-[#D1D5DB] drop-shadow-md hover:drop-shadow-xl text-gray-700 text-sm font-bold py-2 px-4 rounded-2xl hover:bg-teal-500 hover:text-white transition duration-300"
+        >
+          Documentos
+        </div>
+      </NuxtLink>
+      <NuxtLink to="/qrgen/historic">
+        <div
+          class="bg-[#D1D5DB] drop-shadow-md hover:drop-shadow-xl text-gray-700 text-sm font-bold py-2 px-4 rounded-2xl hover:bg-teal-500 hover:text-white transition duration-300"
+        >
+          Histórico
+        </div>
+      </NuxtLink>
     </div>
     <div class="bg-transparent flex justify-evenly items-center h-full">
-      <form @submit.prevent="saveHistoric()" class="bg-white drop-shadow-2xl rounded-full w-96">
+      <form
+        @submit.prevent="saveHistoric()"
+        class="bg-white drop-shadow-2xl rounded-full w-96"
+      >
         <div class="w-full mx-auto bg-white p-8 rounded-t-[30px]">
           <label
             for="category"
@@ -254,7 +260,7 @@ const getDate = () => {
             id="category"
             class="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]"
           >
-            <option v-for="item in $generalStore.category" :value="item.name">
+            <option v-for="item in $tablesStore.category" :value="item.name">
               {{ item.name }}
             </option>
           </select>
@@ -275,9 +281,6 @@ const getDate = () => {
               class="indent-2 w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]"
             />
             <datalist id="nameList">
-              <!-- <option v-for="item in $generalStore.names" :value="item">
-                {{ item }}
-              </option> -->
               <option value="Ejuri"></option>
               <option value="Blu"></option>
               <option value="Progra"></option>
@@ -411,7 +414,6 @@ const getDate = () => {
           </div>
           <button
             class="w-full drop-shadow-md hover:drop-shadow-xl bg-teal-500 text-gray-700 text-sm font-bold py-2 px-4 rounded-full hover:bg-[#3f51b5] hover:text-white transition duration-300"
-
           >
             Guardar
           </button>

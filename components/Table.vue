@@ -1,6 +1,56 @@
 <script setup>
-/* import DialogTableItem from "./DialogTableItem.vue";
-import TableDataRow from "./TableDataRow.vue"; */
+import { storeToRefs } from "pinia";
+import { useModal } from '~/composables/useModal';
+const modal = useModal();
+const route = useRoute();
+const { $generalStore, $tablesStore, $userStore } = useNuxtApp();
+const { role } = storeToRefs($userStore);
+const { edited } = storeToRefs($tablesStore);
+let fragmentedData = [];
+let filters = [];
+let columns = [];
+const data = ref([]);
+const totalPages = ref(1);
+const currentPage = ref(1);
+onMounted(async () => {
+  filters = [
+    "PYME",
+    "FloreSer",
+    "Mutuos",
+    "Buró",
+    "Laboral",
+    "Alianzas y Proveedores",
+    "Todo",
+  ];
+  try {
+    $generalStore.start();
+    if (route.name === "qrgen-documents") {
+      columns = ["ID", "Tipo", "Categoría", "Duplicado", "Operación"];
+      await $tablesStore.getCategoryData();
+      await $tablesStore.getDocumentList();
+      resetData($tablesStore.documentList);
+    } else {
+      columns = [
+        "ID",
+        "Nombre",
+        "Folio",
+        "Categoría",
+        "Tipo de documento",
+        "Usuario",
+        "Comentarios",
+        "QR",
+      ];
+
+      await $tablesStore.getQrHistoricData();
+
+      resetData($tablesStore.qrhistoricList);
+    }
+    $generalStore.stop();
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 const divideData = (arr, tamanoParte) => {
   const partes = [];
   const longitud = arr.length;
@@ -20,51 +70,6 @@ const resetData = (arr) => {
   data.value = fragmentedData[currentPage.value - 1];
 };
 
-const route = useRoute();
-const { $generalStore } = useNuxtApp();
-let fragmentedData = [];
-let filters = [];
-let columns = [];
-let data = ref([]);
-let edited = ref(false);
-let totalPages = ref(1);
-let currentPage = ref(1);
-filters = [
-  "PYME",
-  "FloreSer",
-  "Mutuos",
-  "Buró",
-  "Laboral",
-  "Alianzas y Proveedores",
-  "Todo",
-];
-try {
-  $generalStore.start();
-  if (route.name === "qrgen-documents") {
-    columns = ["ID", "Tipo", "Categoría", "Duplicado", "Operación"];
-
-    await $generalStore.getDocumentList();
-    resetData($generalStore.documentList);
-  } else {
-    columns = [
-      "ID",
-      "Nombre",
-      "Folio",
-      "Categoría",
-      "Tipo de documento",
-      "Usuario",
-      "Comentarios",
-      "QR",
-    ];
-
-    await $generalStore.getQrHistoricData();
-
-    resetData($generalStore.qrhistoricList);
-  }
-  $generalStore.stop();
-} catch (e) {
-  console.log(e);
-}
 const NextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
@@ -91,9 +96,9 @@ const filterData = (type) => {
   let temp = [];
 
   if (route.name === "qrgen-documents") {
-    temp = filterByCategory(type, $generalStore.documentList);
+    temp = filterByCategory(type, $tablesStore.documentList);
   } else if (route.name === "qrgen-historic") {
-    temp = filterByCategory(type, $generalStore.qrhistoricList);
+    temp = filterByCategory(type, $tablesStore.qrhistoricList);
   }
 
   currentPage.value = 1;
@@ -103,7 +108,7 @@ const filterData = (type) => {
 const searchData = (input) => {
   let temp = [];
   if (route.name === "qrgen-documents") {
-    temp = $generalStore.documentList.filter(function (item) {
+    temp = $tablesStore.documentList.filter(function (item) {
       return (
         item.id.toLowerCase().includes(input.toLowerCase()) ||
         item.category.name.toLowerCase().includes(input.toLowerCase()) ||
@@ -111,7 +116,7 @@ const searchData = (input) => {
       );
     });
   } else if (route.name === "qrgen-historic") {
-    temp = $generalStore.qrhistoricList.filter(function (item) {
+    temp = $tablesStore.qrhistoricList.filter(function (item) {
       return (
         item.id.toString().toLowerCase().includes(input.toLowerCase()) ||
         item.client.name.toLowerCase().includes(input.toLowerCase()) ||
@@ -127,31 +132,40 @@ const searchData = (input) => {
 };
 
 const add = async () => {
-  $generalStore.emptyDocumentToEdit();
-  $generalStore.creatingDocument = true;
-  $generalStore.overlayEdit = true;
+  $tablesStore.emptyDocumentToEdit();
+  $tablesStore.creatingDocument = true;
 
+  $tablesStore.overlayEdit = true;
 };
 
 const edit = async (id) => {
-  await $generalStore.getDocumentToEdit(id);
-  $generalStore.creatingDocument = false;
-  $generalStore.overlayEdit = true;
+  await $tablesStore.getDocumentToEdit(id);
+  $tablesStore.creatingDocument = false;
+  $tablesStore.overlayEdit = true;
+};
 
+const remove = async (id) => {
+  if (route.name === "qrgen-documents") {
+    $tablesStore.deleteDocument(id);
+  } else if (route.name === "qrgen-historic") {
+    $tablesStore.deleteQrHistoric(id);
+  }
+  $tablesStore.edited = true;
 };
 
 const viewQR = async (id) => {
-  await $generalStore.getQrToView(id).then(() => {
-    $generalStore.overlayQr = true;
+  await $tablesStore.getQrToView(id).then(() => {
+    $tablesStore.overlayQr = true;
   });
 };
+
 watch(
-  () => $generalStore.edited,
+  () => edited.value,
   async () => {
-    if ($generalStore.edited) {
-      await $generalStore.getDocumentList();
-      resetData($generalStore.documentList);
-      $generalStore.edited = false;
+    if (edited.value) {
+      await $tablesStore.getDocumentList();
+      resetData($tablesStore.documentList);
+      edited.value = false;
     }
   }
 );
@@ -159,8 +173,10 @@ watch(
 
 <template>
   <section class="container px-4 mx-auto">
-    <DialogQRTable />
-    <DialogTableItem />
+    <Teleport to="body">
+      <DialogTableItem />
+      <DialogQRTable />
+    </Teleport>
     <div class="mt-6 md:flex md:items-center md:justify-between">
       <div
         class="inline-flex overflow-hidden bg-white border divide-x rounded-lg rtl:flex-row-reverse"
@@ -259,6 +275,17 @@ watch(
                         class="w-6 h-6"
                       />
                     </button>
+                    <button
+                      v-if="role === 'admin'"
+                      @click="remove(item.id)"
+                      class="px-1 py-1 text-gray-500 hover:text-red-500 transition-colors duration-200 rounded-lg hover:bg-gray-100"
+                    >
+                      <Icon
+                        name="material-symbols:delete-outline-rounded"
+                        size="22"
+                        class="w-6 h-6"
+                      />
+                    </button>
                   </td>
                 </tr>
                 <tr v-else v-for="item in data">
@@ -287,7 +314,7 @@ watch(
     </div>
 
     <div class="mt-6 mb-6 sm:flex sm:items-center sm:justify-between">
-      <div class="text-sm text-gray-500 ">
+      <div class="text-sm text-gray-500">
         Página
         <span class="font-medium text-gray-700"
           >{{ currentPage }} de {{ totalPages }}</span

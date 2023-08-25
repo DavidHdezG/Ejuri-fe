@@ -6,8 +6,8 @@
 </script>
 
 <template>
-    <MainLayout :pageTitle="pageTitle">
-        <Loading/>
+<!--     <MainLayout :pageTitle="pageTitle">
+
         <Table/>
-    </MainLayout>
+    </MainLayout> -->
 </template>

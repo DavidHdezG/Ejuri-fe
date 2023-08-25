@@ -1,11 +1,12 @@
 import { useUserStore } from "~/stores/user"
 import { useGeneralStore } from "~/stores/general"
-
+import { useTablesStore } from "~/stores/tables"
 export default defineNuxtPlugin((NuxtApp) => {
     return {
         provide: { 
             userStore: useUserStore(),
-            generalStore: useGeneralStore()
+            generalStore: useGeneralStore(),
+            tablesStore: useTablesStore(),
         },
     }
 })

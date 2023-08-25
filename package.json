@@ -25,6 +25,7 @@
     "@pinia/nuxt": "^0.4.11",
     "jspdf": "^2.5.1",
     "pinia": "^2.1.4",
+    "qr-scanner": "^1.4.2",
     "qrcode": "^1.5.3",
     "sass": "^1.64.2",
     "vite-plugin-vuetify": "^1.0.2",

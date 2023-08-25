@@ -1,27 +1,28 @@
 <script setup>
-const { $generalStore } = useNuxtApp();
-
-let create = ref(false);
-let id = ref();
-let type = ref();
-let category = ref();
-let duplicate = ref(false);
+import { storeToRefs} from "pinia";
+const { $tablesStore } = useNuxtApp();
+const { overlayEdit, edited,  documentToEdit, creatingDocument } = storeToRefs($tablesStore);
+const create = ref(false);
+const id = ref();
+const type = ref();
+const categoryInput = ref();
+const duplicate = ref(false);
 /* try {
-  $generalStore.getCategoryData();
+  $tablesStore.getCategoryData();
 } catch (e) {
   console.log(e);
 } */
 
 const editDoc = async () => {
   try {
-    await $generalStore.editDocument(
+    await $tablesStore.editDocument(
       id.value,
       type.value,
       category.value,
       duplicate.value
     );
-    $generalStore.edited = true;
-    $generalStore.overlayEdit = false;
+    edited.value = true;
+    overlayEdit.value = false;
   } catch (e) {
     console.log(e);
   }
@@ -29,56 +30,52 @@ const editDoc = async () => {
 
 const saveDoc = async () => {
   try {
-    console.log(id.value)
-    console.log(type.value)
-    console.log($generalStore.category.find((item) => item.id === category.value).id)
-    console.log(duplicate.value)
-    await $generalStore.saveDocument(
+    await $tablesStore.saveDocument(
       id.value,
       type.value,
-      $generalStore.category.find((item) => item.id === category.value).id,
+      $tablesStore.category.find((item) => item.id === category.value).id,
       duplicate.value
     );
-    $generalStore.edited = true;
-    $generalStore.overlayEdit = false;
+    edited.value = true;
+    overlayEdit.value = false;
   } catch (e) {
     console.log(e);
   }
 };
 
 const cancel = () => {
-  $generalStore.overlayEdit = false;
-  $generalStore.creatingDocument = false;
+  overlayEdit.value = false;
+  creatingDocument.value = false;
 };
 watch(
-  () => $generalStore.creatingDocument,
+  () => creatingDocument.value,
   () => {
-    console.log(create.value + " create");
-    create.value = $generalStore.creatingDocument;
+    console.log(creatingDocument.value)
+    create.value = creatingDocument.value;
   }
 );
 watch(
-  () => $generalStore.documentToEdit,
+  () => documentToEdit.value,
   () => {
-    id.value = $generalStore.documentToEdit
-      ? $generalStore.documentToEdit.id
+    id.value = documentToEdit.value
+      ? documentToEdit.value.id
       : "";
-    type.value = $generalStore.documentToEdit
-      ? $generalStore.documentToEdit.type
+    type.value = documentToEdit.value
+      ? documentToEdit.value.type
       : "";
-    category.value = $generalStore.documentToEdit
-      ? $generalStore.documentToEdit.category.id
+    categoryInput.value = documentToEdit.value
+      ? documentToEdit.value.category.id
       : "";
-    duplicate.value = $generalStore.documentToEdit
-      ? $generalStore.documentToEdit.duplicate
+    duplicate.value = documentToEdit.value
+      ? documentToEdit.value.duplicate
       : "";
   }
 );
 </script>
 
 <template>
-  <div class="text-center">
-    <v-dialog rounded v-model="$generalStore.overlayEdit" width="auto">
+  <div class="text-center absolute">
+    <v-dialog rounded v-model="overlayEdit" width="auto">
       <!--  <template v-slot:activator="{ props }">
         <v-btn color="primary" v-bind="props"> Open Dialog </v-btn>
       </template> -->
@@ -116,18 +113,20 @@ watch(
 
                 <div class="pl-4">
                   <label for="category">Categoría:</label>
+                  
                   <select
                     required
                     name="category"
-                    v-model="category"
+                    v-model="categoryInput"
                     id="category"
                     class="border border-gray-300 rounded focus:outline-none focus:border-[#A3DEE0] p-2 m-2"
                   >
                     <option
-                      v-for="item in $generalStore.category"
+                      v-for="item in $tablesStore.category"
                       :value="item.id"
                       :key="item.id ? item.id : ''"
                     >
+
                       {{ item.name }}
                     </option>
                   </select>

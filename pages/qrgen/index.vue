@@ -8,12 +8,12 @@ const { $userStore } = useNuxtApp();
 definePageMeta({
   middleware: ["auth"],
 });
-let alertType = ref(0);
-let alertMsg = ref("");
+const alertType = ref(0);
+const alertMsg = ref("");
 
-let category = ref("");
-let useComments = ref("");
-let other = ref("");
+const category = ref("");
+const useComments = ref(false);
+const otherDocument = ref("");
 try {
   $generalStore.start();
   await $tablesStore.getDocumentList();
@@ -21,35 +21,35 @@ try {
 } catch (e) {
   console.log(e);
 }
-let name = ref("");
-let folio = ref("");
-let comments = ref("");
-let pyme = ref(
+const name = ref("");
+const folio = ref("");
+const comments = ref("");
+const pyme = ref(
   $tablesStore.documentList
     .filter((item) => item.category.name === "PYME")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
-let floreser = ref(
+const floreser = ref(
   $tablesStore.documentList
     .filter((item) => item.category.name === "FLORESER")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
-let mutuos = ref(
+const mutuos = ref(
   $tablesStore.documentList
     .filter((item) => item.category.name === "MUTUOS")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
-let laboral = ref(
+const laboral = ref(
   $tablesStore.documentList
     .filter((item) => item.category.name === "LABORAL")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
-let buro = ref(
+const buro = ref(
   $tablesStore.documentList
     .filter((item) => item.category.name === "BURO")
     .sort((a, b) => a.type.localeCompare(b.type))
 );
-let alianzas = ref(
+const alianzas = ref(
   $tablesStore.documentList
     .filter((item) => item.category.name === "ALIANZAS Y PROVEEDORES")
     .sort((a, b) => a.type.localeCompare(b.type))
@@ -59,18 +59,22 @@ const data = ref("");
 const image = ref(defaultQr);
 $generalStore.stop();
 const updateFileName = async () => {
+
+  if(otherDocument.value==="Otro"){
+    useComments.value = true;
+  }
   if (useComments.value) {
     data.value = `${category.value}/${name.value}/${folio.value}/${
-      other.value
+      otherDocument.value
     }/${comments.value}/${getDate()}`;
   } else {
     data.value = `${category.value}/${name.value}/${folio.value}/${
-      other.value
+      otherDocument.value
     }/${getDate()}`;
   }
+  
   try {
-    const qrcode = await QRCode.toDataURL(data.value);
-    image.value = qrcode;
+    await generate();
   } catch (err) {
     console.error(err);
   }
@@ -82,7 +86,7 @@ const saveHistoric = async () => {
     !name.value ||
     !folio.value ||
     !category.value ||
-    !other.value ||
+    !otherDocument.value ||
     !image.value;
 
   const missingComments = !comments.value && useComments.value;
@@ -98,7 +102,7 @@ const saveHistoric = async () => {
     category: $tablesStore.category.find((item) => item.name === category.value)
       .id,
     document: $tablesStore.documentList.find(
-      (item) => item.type === other.value
+      (item) => item.type === otherDocument.value
     ).id,
     user: $userStore.id,
     comments: comments.value,
@@ -109,12 +113,8 @@ const saveHistoric = async () => {
     if (res.status === 201) {
       alertType.value = 1;
       alertMsg.value = "Guardado correctamente";
-      name.value = "";
-      folio.value = "";
-      category.value = "";
-      other.value = "";
-      comments.value = "";
-      image.value = defaultQr;
+      await print();
+      
       setTimeout(() => {
         alertType.value = 0;
         alertMsg.value = "";
@@ -137,7 +137,14 @@ const saveHistoric = async () => {
     }, 3000);
   }
 };
-
+const resetForm = ()=>{
+  name.value = "";
+  folio.value = "";
+  category.value = "";
+  otherDocument.value = "";
+  comments.value = "";
+  image.value = defaultQr;
+}
 const generate = async () => {
   if (!data.value) {
     image.value = defaultQr;
@@ -161,11 +168,11 @@ const download = async () => {
   pdf.text("Nombre: " + name.value, 60, 30);
   pdf.addImage(imagen, "JPEG", 55, 40, pdfAncho, pdfAlto);
   pdf.text("Folio: " + folio.value, 60, 190);
-  pdf.text("Tipo de documento: " + other.value, 60, 200);
+  pdf.text("Tipo de documento: " + otherDocument.value, 60, 200);
   pdf.text("Comentarios: " + comments.value, 60, 210);
   pdf.text("Fecha: " + getDate(), 60, 220);
 
-  pdf.save(`QR-${other.value}-${name.value}-${folio.value}-${getDate()}`);
+  pdf.save(`QR-${otherDocument.value}-${name.value}-${folio.value}-${getDate()}`);
 };
 
 const print = async () => {
@@ -183,7 +190,7 @@ const print = async () => {
       <body>
           <h1>${name.value}</h1>
           <img src="${img.src}" alt="">
-          <p>${other.value} - ${category.value} - ${
+          <p>${otherDocument.value} - ${category.value} - ${
       folio.value
     } - ${getDate()}</p>
       </body>
@@ -207,19 +214,20 @@ const print = async () => {
     ventana.onload = function () {
       ventana.print();
       ventana.close();
+      resetForm();
     };
   };
 };
 
 const getDate = () => {
   const timestamp = Date.now();
-  const fecha = new Date(timestamp);
+  const date = new Date(timestamp);
 
-  const dia = fecha.getDate().toString().padStart(2, "0");
-  const mes = (fecha.getMonth() + 1).toString().padStart(2, "0"); // Se agrega +1 al mes porque los meses se representan de 0 a 11
-  const anio = fecha.getFullYear().toString().slice(-2);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Se agrega +1 al month porque los meses se representan de 0 a 11
+  const year = date.getFullYear().toString().slice(-2);
 
-  return `${dia}-${mes}-${anio}`;
+  return `${day}-${month}-${year}`;
 };
 </script>
 
@@ -308,7 +316,7 @@ const getDate = () => {
             <select
               @change="updateFileName()"
               required
-              v-model="other"
+              v-model="otherDocument"
               name="type"
               id="type"
               class="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]"
@@ -363,6 +371,7 @@ const getDate = () => {
               </option>
             </select>
           </div>
+          {{ otherDocument }}
           <div class="mb-4">
             <div class="flex justify-between">
               <label
@@ -372,7 +381,7 @@ const getDate = () => {
               >
               <input
                 @change="updateFileName()"
-                v-if="other != 'Otro (Escribir en comentarios)'"
+                v-if="otherDocument != 'Otro'"
                 type="checkbox"
                 name="useComments"
                 id="useComments"
@@ -395,7 +404,7 @@ const getDate = () => {
             <input
               @input="updateFileName()"
               v-model="comments"
-              v-if="other != 'Otro (Escribir en comentarios)'"
+              v-if="otherDocument != 'Otro'"
               type="text"
               name="comments"
               id="comments"

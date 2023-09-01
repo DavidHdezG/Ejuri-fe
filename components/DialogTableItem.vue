@@ -33,7 +33,7 @@ const saveDoc = async () => {
     await $tablesStore.saveDocument(
       id.value,
       type.value,
-      $tablesStore.category.find((item) => item.id === category.value).id,
+      category.value,
       duplicate.value
     );
     edited.value = true;

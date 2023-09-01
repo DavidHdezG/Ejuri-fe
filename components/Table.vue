@@ -1,13 +1,15 @@
 <script setup>
 import { storeToRefs } from "pinia";
-import { useModal } from '~/composables/useModal';
-const modal = useModal();
+
+
 const route = useRoute();
 const { $generalStore, $tablesStore, $userStore } = useNuxtApp();
 const { role } = storeToRefs($userStore);
-const { edited } = storeToRefs($tablesStore);
+const { edited, confirmDelete,showConfirm } = storeToRefs($tablesStore);
 let fragmentedData = [];
+const infoDocumentToDelete = ref(null);
 let filters = [];
+const idToRemove=ref(null);
 let columns = [];
 const data = ref([]);
 const totalPages = ref(1);
@@ -152,17 +154,31 @@ const remove = async (id) => {
   }
   $tablesStore.edited = true;
 };
-
+const deleteItemConfirm = async (id)=>{
+  infoDocumentToDelete.value= `ID: ${id}`;
+  idToRemove.value=id;
+  showConfirm.value=true;
+}
 const viewQR = async (id) => {
   await $tablesStore.getQrToView(id).then(() => {
     $tablesStore.overlayQr = true;
   });
 };
+watch(
+  () => confirmDelete.value,
+  async () => {
+    if (confirmDelete.value) {
+      await remove(idToRemove.value);
+      confirmDelete.value = false;
+    }
+  }
+);
 
 watch(
   () => edited.value,
   async () => {
     if (edited.value) {
+
       await $tablesStore.getDocumentList();
       resetData($tablesStore.documentList);
       edited.value = false;
@@ -176,6 +192,7 @@ watch(
     <Teleport to="body">
       <DialogTableItem />
       <DialogQRTable />
+      <ConfirmAlert :string="infoDocumentToDelete" />
     </Teleport>
     <div class="mt-6 md:flex md:items-center md:justify-between">
       <div
@@ -277,7 +294,7 @@ watch(
                     </button>
                     <button
                       v-if="role === 'admin'"
-                      @click="remove(item.id)"
+                      @click="deleteItemConfirm(item.id)"
                       class="px-1 py-1 text-gray-500 hover:text-red-500 transition-colors duration-200 rounded-lg hover:bg-gray-100"
                     >
                       <Icon
@@ -290,7 +307,7 @@ watch(
                 </tr>
                 <tr v-else v-for="item in data">
                   <TableDataRow :data="item.id" />
-                  <TableDataRow :data="item.client.name" />
+                  <TableDataRow :data="item.client.name ? item.client.name:''" />
                   <TableDataRow :data="item.folio" />
                   <TableDataRow :data="item.category.name" />
                   <TableDataRow :data="item.document.type" />

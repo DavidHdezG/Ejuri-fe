@@ -5,6 +5,8 @@ const $axios = axios().provide.axios;
 
 export const useTablesStore = defineStore("tables", {
   state: () => ({
+    confirmDelete: false,
+    showConfirm: false,
     documentToEdit: {
       id: null,
       type: null,
@@ -36,7 +38,7 @@ export const useTablesStore = defineStore("tables", {
     },
     async getDocumentList() {
       const { data } = await $axios.get("/documents");
-      console.log(data)
+
       this.$state.documentList = data;
     },
     async emptyDocumentToEdit() {
@@ -92,5 +94,5 @@ export const useTablesStore = defineStore("tables", {
       return await $axios.delete(`/documents/${id}`);
     }
   },
-  persist: true,
+  persist: false,
 });

@@ -1,4 +1,7 @@
 <script setup>
+
+/* Al oprimir guardar se manda a pantalla de imprimir pero no se reinicia el forms */
+
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 const defaultQr = "/qrcode.png";
@@ -97,7 +100,7 @@ const saveHistoric = async () => {
     return;
   }
   const data = {
-    client: name.value, // TEMPORAL
+    client: name.value, // TODO:  TEMPORAL
     folio: folio.value,
     category: $tablesStore.category.find((item) => item.name === category.value)
       .id,
@@ -113,7 +116,7 @@ const saveHistoric = async () => {
     if (res.status === 201) {
       alertType.value = 1;
       alertMsg.value = "Guardado correctamente";
-      await print();
+      await print(true);
       
       setTimeout(() => {
         alertType.value = 0;
@@ -175,7 +178,7 @@ const download = async () => {
   pdf.save(`QR-${otherDocument.value}-${name.value}-${folio.value}-${getDate()}`);
 };
 
-const print = async () => {
+const print = async (save=false) => {
   const imagen = document.getElementById("qr-img");
 
   // Crea un nuevo objeto de imagen para asegurar que la imagen se cargue completamente
@@ -214,7 +217,9 @@ const print = async () => {
     ventana.onload = function () {
       ventana.print();
       ventana.close();
-      resetForm();
+      if(save){
+        resetForm();
+      }
     };
   };
 };
@@ -436,21 +441,24 @@ const getDate = () => {
             :text="alertMsg"
             type="error"
             variant="tonal"
-            class="absolute w-[300px]"
+            closable
+            class="absolute w-[350px]"
           ></v-alert>
           <v-alert
             v-if="alertType == 2"
             :text="alertMsg"
             type="warning"
+            closable
             variant="tonal"
-            class="absolute w-[300px]"
+            class="absolute w-[350px]"
           ></v-alert>
           <v-alert
             v-if="alertType == 1"
             :text="alertMsg"
             type="success"
+            closable
             variant="tonal"
-            class="absolute w-[300px]"
+            class="absolute w-[350px]"
           ></v-alert>
         </div>
         <div
@@ -473,7 +481,7 @@ const getDate = () => {
                   class="text-teal-500 hover:text-[#3f51b5] transition duration-300 drop-shadow-md hover:drop-shadow-xl"
                 />
               </button>
-              <button class="" @click="print()">
+              <button class="" @click="print(false)">
                 <Icon
                   class="text-teal-500 hover:text-[#3f51b5] transition duration-300 drop-shadow-md hover:drop-shadow-xl"
                   name="material-symbols:print-rounded"

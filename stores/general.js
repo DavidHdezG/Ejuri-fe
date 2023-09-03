@@ -6,13 +6,16 @@ const $axios = axios().provide.axios;
 
 export const useGeneralStore = defineStore("general", {
   state: () => ({
-    
+    clientList: null,
     isLoading: false,
     isLogged: false,
   }),
   actions: {
-    
-    
+    async getClientData(){
+      const { data } = await $axios.get("/client");
+      this.$state.clientList = data;
+      return data;
+    },   
     start() {
       this.$state.isLoading = true;
     },

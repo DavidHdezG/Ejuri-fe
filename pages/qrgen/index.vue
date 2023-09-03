@@ -1,5 +1,5 @@
 <script setup>
-
+import { Toaster, toast } from "vue-sonner";
 /* Al oprimir guardar se manda a pantalla de imprimir pero no se reinicia el forms */
 
 import { jsPDF } from "jspdf";
@@ -11,8 +11,6 @@ const { $userStore } = useNuxtApp();
 definePageMeta({
   middleware: ["auth"],
 });
-const alertType = ref(0);
-const alertMsg = ref("");
 
 const category = ref("");
 const useComments = ref(false);
@@ -21,12 +19,34 @@ try {
   $generalStore.start();
   await $tablesStore.getDocumentList();
   await $tablesStore.getCategoryData();
+  await $generalStore.getClientData();
 } catch (e) {
   console.log(e);
 }
 const name = ref("");
 const folio = ref("");
 const comments = ref("");
+const clientData = ref({
+  pyme: $generalStore.clientList.filter(
+    (item) => item.category.name === "PYME"
+  ),
+  floreser: $generalStore.clientList.filter(
+    (item) => item.category.name === "FLORESER"
+  ),
+  mutuos: $generalStore.clientList.filter(
+    (item) => item.category.name === "MUTUOS"
+  ),
+  laboral: $generalStore.clientList.filter(
+    (item) => item.category.name === "LABORAL"
+  ),
+  buro: $generalStore.clientList.filter(
+    (item) => item.category.name === "BURO"
+  ),
+  alianzas: $generalStore.clientList.filter(
+    (item) => item.category === "ALIANZAS Y PROVEEDORES"
+  ),
+});
+
 const pyme = ref(
   $tablesStore.documentList
     .filter((item) => item.category.name === "PYME")
@@ -62,8 +82,7 @@ const data = ref("");
 const image = ref(defaultQr);
 $generalStore.stop();
 const updateFileName = async () => {
-
-  if(otherDocument.value==="Otro"){
+  if (otherDocument.value === "Otro") {
     useComments.value = true;
   }
   if (useComments.value) {
@@ -75,7 +94,7 @@ const updateFileName = async () => {
       otherDocument.value
     }/${getDate()}`;
   }
-  
+
   try {
     await generate();
   } catch (err) {
@@ -95,10 +114,10 @@ const saveHistoric = async () => {
   const missingComments = !comments.value && useComments.value;
 
   if (missingFields || missingComments) {
-    alertType.value = 3;
-    alertMsg.value = "Faltan campos por llenar";
+    toast.error("Faltan campos por llenar");
     return;
   }
+  console.log(name.value)
   const data = {
     client: name.value, // TODO:  TEMPORAL
     folio: folio.value,
@@ -114,40 +133,26 @@ const saveHistoric = async () => {
   try {
     const res = await $tablesStore.saveHistoric(data);
     if (res.status === 201) {
-      alertType.value = 1;
-      alertMsg.value = "Guardado correctamente";
+      toast.success("Guardado correctamente");
       await print(true);
-      
-      setTimeout(() => {
-        alertType.value = 0;
-        alertMsg.value = "";
-      }, 3000);
+
     } else {
-      alertType.value = 3;
-      alertMsg.value = "Error al guardar";
-      setTimeout(() => {
-        alertType.value = 0;
-        alertMsg.value = "";
-      }, 3000);
+      toast.error("Error al guardar");
+
     }
   } catch (e) {
-    console.log(e);
-    alertType.value = 3;
-    alertMsg.value = "Error al guardar";
-    setTimeout(() => {
-      alertType.value = 0;
-      alertMsg.value = "";
-    }, 3000);
+    toast.error(`Error al guardar: ${e}`);
+
   }
 };
-const resetForm = ()=>{
+const resetForm = () => {
   name.value = "";
   folio.value = "";
   category.value = "";
   otherDocument.value = "";
   comments.value = "";
   image.value = defaultQr;
-}
+};
 const generate = async () => {
   if (!data.value) {
     image.value = defaultQr;
@@ -175,10 +180,12 @@ const download = async () => {
   pdf.text("Comentarios: " + comments.value, 60, 210);
   pdf.text("Fecha: " + getDate(), 60, 220);
 
-  pdf.save(`QR-${otherDocument.value}-${name.value}-${folio.value}-${getDate()}`);
+  pdf.save(
+    `QR-${otherDocument.value}-${name.value}-${folio.value}-${getDate()}`
+  );
 };
 
-const print = async (save=false) => {
+const print = async (save = false) => {
   const imagen = document.getElementById("qr-img");
 
   // Crea un nuevo objeto de imagen para asegurar que la imagen se cargue completamente
@@ -217,7 +224,7 @@ const print = async (save=false) => {
     ventana.onload = function () {
       ventana.print();
       ventana.close();
-      if(save){
+      if (save) {
         resetForm();
       }
     };
@@ -294,9 +301,44 @@ const getDate = () => {
               class="indent-2 w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]"
             />
             <datalist id="nameList">
-              <option value="Ejuri"></option>
-              <option value="Blu"></option>
-              <option value="Progra"></option>
+              <option
+                v-if="category === 'PYME'"
+                v-for="item in clientData.pyme"
+                :value="item.name"
+                :key="item.id"
+              >
+              </option>
+              <option
+                v-if="category === 'FLORESER'"
+                v-for="item in clientData.floreser"
+                :value="item.name"
+                :key="item.id"
+              ></option>
+              <option
+                v-if="category === 'BURO'"
+                v-for="item in clientData.buro"
+                :value="item.name"
+                :key="item.id">
+              </option>
+              <option
+                v-if="category === 'MUTUOS'"
+                v-for="item in clientData.mutuos"
+                :value="item.name"
+                :key="item.id">
+              </option>
+              <option
+                v-if="category === 'LABORAL'"
+                v-for="item in clientData.laboral"
+                :value="item.name"
+                :key="item.id">
+              </option>
+              <option
+                v-if="category === 'ALIANZAS Y PROVEEDORES'"
+                v-for="item in clientData.alianzas"
+                :value="item.name"
+                :key="item.id">
+              </option>
+
             </datalist>
           </div>
           <div class="mb-4">
@@ -376,7 +418,6 @@ const getDate = () => {
               </option>
             </select>
           </div>
-          {{ otherDocument }}
           <div class="mb-4">
             <div class="flex justify-between">
               <label
@@ -435,32 +476,6 @@ const getDate = () => {
       </form>
 
       <div class="flex flex-col space-y-6 items-center">
-        <div id="alerts">
-          <v-alert
-            v-if="alertType == 3"
-            :text="alertMsg"
-            type="error"
-            variant="tonal"
-            closable
-            class="absolute w-[350px]"
-          ></v-alert>
-          <v-alert
-            v-if="alertType == 2"
-            :text="alertMsg"
-            type="warning"
-            closable
-            variant="tonal"
-            class="absolute w-[350px]"
-          ></v-alert>
-          <v-alert
-            v-if="alertType == 1"
-            :text="alertMsg"
-            type="success"
-            closable
-            variant="tonal"
-            class="absolute w-[350px]"
-          ></v-alert>
-        </div>
         <div
           id="qrimage"
           class="bg-white drop-shadow-2xl rounded-[30px] w-[400px] flex flex-col items-center"

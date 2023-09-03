@@ -29,6 +29,7 @@
     "qrcode": "^1.5.3",
     "sass": "^1.64.2",
     "vite-plugin-vuetify": "^1.0.2",
+    "vue-sonner": "^0.4.4",
     "vuetify": "^3.3.11"
   },
   "overrides": {

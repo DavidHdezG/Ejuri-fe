@@ -33,7 +33,7 @@
           v-if="showMenu"
           class="absolute flex flex-col space-y-1 top-[40px] w-[170px] right-[-20px]"
         >
-          <div class="bg-white rounded-lg z-20 drop-shadow-xl">
+          <div class="bg-white rounded-lg z-20 drop-shadow-xl ">
             <button
               @click="logout()"
               class="flex overflow-hidden w-full text-xs font-medium text-gray-700 py-2 px-2 hover:bg-teal-500 hover:text-white hover:text-base rounded-md transition duration-150 ease-in-out"

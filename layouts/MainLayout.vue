@@ -5,7 +5,7 @@
         <SideBar/>
         <div class="flex flex-col w-[calc(100%-240px)]">
             <Header :page-title="pageTitle"/>
-            
+            <Toaster/>
             <slot/>
         </div>
     </div>
@@ -15,6 +15,7 @@
     import Loading from '../components/Loading.vue';
     import SideBar from '../components/SideBar.vue'
     import Header from '../components/Header.vue'
+    import { Toaster } from 'vue-sonner'
     const props = defineProps(['pageTitle'])
     const { pageTitle } = toRefs(props)
 </script>

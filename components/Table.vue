@@ -1,6 +1,6 @@
 <script setup>
 import { storeToRefs } from "pinia";
-
+import { toast } from "vue-sonner";
 
 const route = useRoute();
 const { $generalStore, $tablesStore, $userStore } = useNuxtApp();
@@ -152,6 +152,7 @@ const remove = async (id) => {
   } else if (route.name === "qrgen-historic") {
     $tablesStore.deleteQrHistoric(id);
   }
+  toast.success("Documento eliminado");
   $tablesStore.edited = true;
 };
 const deleteItemConfirm = async (id)=>{

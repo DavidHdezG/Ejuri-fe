@@ -47,36 +47,26 @@ const clientData = ref({
   ),
 });
 
-const pyme = ref(
-  $tablesStore.documentList
+const documentList = ref({
+  pyme: $tablesStore.documentList
     .filter((item) => item.category.name === "PYME")
-    .sort((a, b) => a.type.localeCompare(b.type))
-);
-const floreser = ref(
-  $tablesStore.documentList
+    .sort((a, b) => a.type.localeCompare(b.type)),
+  floreser: $tablesStore.documentList
     .filter((item) => item.category.name === "FLORESER")
-    .sort((a, b) => a.type.localeCompare(b.type))
-);
-const mutuos = ref(
-  $tablesStore.documentList
+    .sort((a, b) => a.type.localeCompare(b.type)),
+  mutuos: $tablesStore.documentList
     .filter((item) => item.category.name === "MUTUOS")
-    .sort((a, b) => a.type.localeCompare(b.type))
-);
-const laboral = ref(
-  $tablesStore.documentList
+    .sort((a, b) => a.type.localeCompare(b.type)),
+  laboral: $tablesStore.documentList
     .filter((item) => item.category.name === "LABORAL")
-    .sort((a, b) => a.type.localeCompare(b.type))
-);
-const buro = ref(
-  $tablesStore.documentList
+    .sort((a, b) => a.type.localeCompare(b.type)),
+  buro: $tablesStore.documentList
     .filter((item) => item.category.name === "BURO")
-    .sort((a, b) => a.type.localeCompare(b.type))
-);
-const alianzas = ref(
-  $tablesStore.documentList
+    .sort((a, b) => a.type.localeCompare(b.type)),
+  alianzas: $tablesStore.documentList
     .filter((item) => item.category.name === "ALIANZAS Y PROVEEDORES")
-    .sort((a, b) => a.type.localeCompare(b.type))
-);
+    .sort((a, b) => a.type.localeCompare(b.type)),
+});
 
 const data = ref("");
 const image = ref(defaultQr);
@@ -117,9 +107,12 @@ const saveHistoric = async () => {
     toast.error("Faltan campos por llenar");
     return;
   }
-  console.log(name.value)
+  console.log(name.value);
+  // TODO: Hacer que si el cliente no existe se cree uno nuevo
   const data = {
-    client: name.value, // TODO:  TEMPORAL
+    client: /* name.value */ $generalStore.clientList.find(
+      (item) => item.name === name.value
+    ).id,
     folio: folio.value,
     category: $tablesStore.category.find((item) => item.name === category.value)
       .id,
@@ -135,14 +128,11 @@ const saveHistoric = async () => {
     if (res.status === 201) {
       toast.success("Guardado correctamente");
       await print(true);
-
     } else {
       toast.error("Error al guardar");
-
     }
   } catch (e) {
     toast.error(`Error al guardar: ${e}`);
-
   }
 };
 const resetForm = () => {
@@ -306,8 +296,7 @@ const getDate = () => {
                 v-for="item in clientData.pyme"
                 :value="item.name"
                 :key="item.id"
-              >
-              </option>
+              ></option>
               <option
                 v-if="category === 'FLORESER'"
                 v-for="item in clientData.floreser"
@@ -318,27 +307,26 @@ const getDate = () => {
                 v-if="category === 'BURO'"
                 v-for="item in clientData.buro"
                 :value="item.name"
-                :key="item.id">
-              </option>
+                :key="item.id"
+              ></option>
               <option
                 v-if="category === 'MUTUOS'"
                 v-for="item in clientData.mutuos"
                 :value="item.name"
-                :key="item.id">
-              </option>
+                :key="item.id"
+              ></option>
               <option
                 v-if="category === 'LABORAL'"
                 v-for="item in clientData.laboral"
                 :value="item.name"
-                :key="item.id">
-              </option>
+                :key="item.id"
+              ></option>
               <option
                 v-if="category === 'ALIANZAS Y PROVEEDORES'"
                 v-for="item in clientData.alianzas"
                 :value="item.name"
-                :key="item.id">
-              </option>
-
+                :key="item.id"
+              ></option>
             </datalist>
           </div>
           <div class="mb-4">
@@ -370,7 +358,7 @@ const getDate = () => {
             >
               <option
                 v-if="category === 'PYME'"
-                v-for="item in pyme"
+                v-for="item in documentList.pyme"
                 :value="item.type"
                 :key="item.type"
               >
@@ -378,7 +366,7 @@ const getDate = () => {
               </option>
               <option
                 v-if="category === 'FLORESER'"
-                v-for="item in floreser"
+                v-for="item in documentList.floreser"
                 :value="item.type"
                 :key="item.type"
               >
@@ -386,7 +374,7 @@ const getDate = () => {
               </option>
               <option
                 v-if="category === 'BURO'"
-                v-for="item in buro"
+                v-for="item in documentList.buro"
                 :value="item.type"
                 :key="item.type"
               >
@@ -394,7 +382,7 @@ const getDate = () => {
               </option>
               <option
                 v-if="category === 'MUTUOS'"
-                v-for="item in mutuos"
+                v-for="item in documentList.mutuos"
                 :value="item.type"
                 :key="item.type"
               >
@@ -402,7 +390,7 @@ const getDate = () => {
               </option>
               <option
                 v-if="category === 'LABORAL'"
-                v-for="item in laboral"
+                v-for="item in documentList.laboral"
                 :value="item.type"
                 :key="item.type"
               >
@@ -410,7 +398,7 @@ const getDate = () => {
               </option>
               <option
                 v-if="category === 'ALIANZAS Y PROVEEDORES'"
-                v-for="item in alianzas"
+                v-for="item in documentList.alianzas"
                 :value="item.type"
                 :key="item.type"
               >

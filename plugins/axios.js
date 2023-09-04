@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { toast } from "vue-sonner"
 export default defineNuxtPlugin((NuxtApp) => {
   axios.defaults.withCredentials = true;
   /* axios.defaults.baseURL = "https://ejuri-be.onrender.com"; */
@@ -8,7 +8,8 @@ export default defineNuxtPlugin((NuxtApp) => {
     return response;
   }, function(error){
     const router = useRouter();
-    if(error.response.status === 401){
+    if(error.response.status === 400){
+      toast.error(error.response.data.message);
       /* NuxtApp.$router.push('/login'); */
     }else if(error.response.status === 403){
       router.push('/errors/403');

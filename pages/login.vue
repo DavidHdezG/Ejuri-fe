@@ -1,12 +1,24 @@
 <script setup>
+import { toast, Toaster } from "vue-sonner";
 const { $userStore } = useNuxtApp();
-let user = ref("");
-let password = ref("");
+
+const user = ref("");
+const password = ref("");
 
 const login = async () => {
   try {
-    $userStore.login(user.value, password.value);
-    //navigateTo("/");
+    toast.promise(
+      $userStore.login(user.value, password.value),
+      {
+        pending: "Iniciando sesión...",
+        success:() => {
+          navigateTo("/");
+          return "Sesión iniciada";
+        },
+        error: "Error al iniciar sesión",
+      }
+    );
+
   } catch (e) {
     console.log(e);
   }
@@ -14,6 +26,7 @@ const login = async () => {
 </script>
 
 <template>
+  <Toaster/>
   <div class="h-screen h-screen flex items-center justify-center">
     <div
       clas

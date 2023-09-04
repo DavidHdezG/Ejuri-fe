@@ -1,3 +1,4 @@
+
 import axios from "../plugins/axios";
 import { defineStore } from "pinia";
 
@@ -16,19 +17,16 @@ export const useUserStore = defineStore("user", {
         email: email,
         password: password,
       });
-      console.log(data);
       if (data.error) {
-        return data.error;
+        return (data.error);
       } else {
-        console.log(data);
         const result = await $axios.get("/users/user");
-        console.log(result.data.name);
         this.id = result.data.id;
         this.name = result.data.name;
         this.email = result.data.email;
         this.role = result.data.role;
       }
-      return navigateTo("/");
+      /* return navigateTo("/"); */
     },
     async logout() {
       await $axios.post("/users/signout");

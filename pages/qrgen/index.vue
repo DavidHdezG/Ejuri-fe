@@ -72,28 +72,27 @@ const data = ref("");
 const image = ref(defaultQr);
 
 // TODO: Cambiar el texto del qr por el objeto json:
-const fileData = ref(
-  {
-    category:null,
-    name:null,
-    folio:null,
-    comments:null,
-    useComments:null
-  }
-)
+const fileData = reactive({
+  category: null,
+  name: null,
+  folio: null,
+  document: null,
+  comments: "",
+  useComments: false,
+});
 $generalStore.stop();
 
 const updateFileName = async () => {
-  if (otherDocument.value === "Otro") {
-    useComments.value = true;
+  if (fileData.document === "Otro") {
+    fileData.useComments = true;
   }
-  if (useComments.value) {
-    data.value = `${category.value}/${name.value}/${folio.value}/${
-      otherDocument.value
-    }/${comments.value}/${getDate()}`;
+  if (fileData.useComments) {
+    data.value = `${fileData.category}/${fileData.name}/${fileData.folio}/${
+      fileData.document
+    }/${fileData.comments}/${getDate()}`;
   } else {
-    data.value = `${category.value}/${name.value}/${folio.value}/${
-      otherDocument.value
+    data.value = `${fileData.category}/${fileData.name}/${fileData.folio}/${
+      fileData.document
     }/${getDate()}`;
   }
 
@@ -107,32 +106,32 @@ const updateFileName = async () => {
 const saveHistoric = async () => {
   await generate();
   const missingFields =
-    !name.value ||
-    !folio.value ||
-    !category.value ||
-    !otherDocument.value ||
+    !fileData.name ||
+    !fileData.folio ||
+    !fileData.category ||
+    !fileData.document ||
     !image.value;
 
-  const missingComments = !comments.value && useComments.value;
+  const missingComments = !fileData.comments && fileData.useComments;
 
   if (missingFields || missingComments) {
     toast.error("Faltan campos por llenar");
     return;
   }
-  console.log(name.value);
   // TODO: Hacer que si el cliente no existe se cree uno nuevo
   const data = {
-    client: /* name.value */ $generalStore.clientList.find(
-      (item) => item.name === name.value
+    client: /* fileData.name */ $generalStore.clientList.find(
+      (item) => item.name === fileData.name
     ).id,
-    folio: folio.value,
-    category: $tablesStore.category.find((item) => item.name === category.value)
-      .id,
+    folio: fileData.folio,
+    category: $tablesStore.category.find(
+      (item) => item.name === fileData.category
+    ).id,
     document: $tablesStore.documentList.find(
-      (item) => item.type === otherDocument.value
+      (item) => item.type === fileData.document
     ).id,
     user: $userStore.id,
-    comments: comments.value,
+    comments: fileData.comments,
     qr: image.value,
   };
   try {
@@ -148,11 +147,11 @@ const saveHistoric = async () => {
   }
 };
 const resetForm = () => {
-  name.value = "";
-  folio.value = "";
-  category.value = "";
-  otherDocument.value = "";
-  comments.value = "";
+  fileData.name = "";
+  fileData.folio = "";
+  fileData.category = "";
+  fileData.document = "";
+  fileData.comments = "";
   image.value = defaultQr;
 };
 const generate = async () => {
@@ -161,7 +160,40 @@ const generate = async () => {
     return;
   }
   try {
-    const qrcode = await QRCode.toDataURL(data.value);
+    /* const data = {
+      client: $generalStore.clientList.find(
+        (item) => item.name === fileData.name
+      ).id,
+      folio: fileData.folio,
+      category: $tablesStore.category.find(
+        (item) => item.name === fileData.category
+      ).id,
+      document: $tablesStore.documentList.find(
+        (item) => item.type === fileData.document
+      ).id,
+      user: $userStore.id,
+      comments: fileData.comments,
+      qr: image.value,
+    }; */
+
+    const fileDataToQr = {
+      category: fileData.category ? $tablesStore.category.find(
+        (item) => item.name === fileData.category
+      ).id: fileData.category,
+      name: fileData.name? $generalStore.clientList.find(
+        (item) => item.name === fileData.name
+      ).id:fileData.name,
+      folio: fileData.folio,
+      document:fileData.document? $tablesStore.documentList.find(
+        (item) => item.type === fileData.document
+      ).id:fileData.document,
+      comments: fileData.useComments?fileData.comments:"",
+      useComments: fileData.useComments,
+      date: getDate(),
+    };
+
+    const dataToQR = JSON.stringify(fileDataToQr);
+    const qrcode = await QRCode.toDataURL(dataToQR);
     image.value = qrcode;
   } catch (err) {
     console.error(err);
@@ -175,15 +207,15 @@ const download = async () => {
   const pdf = new jsPDF();
   const pdfAncho = 100;
   const pdfAlto = (pdfAncho * imagen.naturalHeight) / imagen.naturalWidth;
-  pdf.text("Nombre: " + name.value, 60, 30);
+  pdf.text("Nombre: " + fileData.name, 60, 30);
   pdf.addImage(imagen, "JPEG", 55, 40, pdfAncho, pdfAlto);
-  pdf.text("Folio: " + folio.value, 60, 190);
-  pdf.text("Tipo de documento: " + otherDocument.value, 60, 200);
-  pdf.text("Comentarios: " + comments.value, 60, 210);
+  pdf.text("Folio: " + fileData.folio, 60, 190);
+  pdf.text("Tipo de documento: " + fileData.document, 60, 200);
+  pdf.text("Comentarios: " + fileData.comments, 60, 210);
   pdf.text("Fecha: " + getDate(), 60, 220);
 
   pdf.save(
-    `QR-${otherDocument.value}-${name.value}-${folio.value}-${getDate()}`
+    `QR-${fileData.document}-${fileData.name}-${fileData.folio}-${getDate()}`
   );
 };
 
@@ -200,11 +232,11 @@ const print = async (save = false) => {
     <html>
       <head><title>QR</title></head>
       <body>
-          <h1>${name.value}</h1>
+          <h1>${fileData.name}</h1>
           <img src="${img.src}" alt="">
-          <p>${otherDocument.value} - ${category.value} - ${
-      folio.value
-    } - ${getDate()}</p>
+          <p>${fileData.document} - ${fileData.category} - ${
+      fileData.folio
+    } - ${fileData.comments} - ${getDate()}</p>
       </body>
 
       <style>
@@ -277,7 +309,7 @@ const getDate = () => {
           <select
             @change="updateFileName()"
             required
-            v-model="category"
+            v-model="fileData.category"
             name="category"
             id="category"
             class="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]"
@@ -294,7 +326,7 @@ const getDate = () => {
             >
             <input
               @input="updateFileName()"
-              v-model="name"
+              v-model="fileData.name"
               autocomplete="off"
               list="nameList"
               type="text"
@@ -304,37 +336,37 @@ const getDate = () => {
             />
             <datalist id="nameList">
               <option
-                v-if="category === 'PYME'"
+                v-if="fileData.category === 'PYME'"
                 v-for="item in clientData.pyme"
                 :value="item.name"
                 :key="item.id"
               ></option>
               <option
-                v-if="category === 'FLORESER'"
+                v-if="fileData.category === 'FLORESER'"
                 v-for="item in clientData.floreser"
                 :value="item.name"
                 :key="item.id"
               ></option>
               <option
-                v-if="category === 'BURO'"
+                v-if="fileData.category === 'BURO'"
                 v-for="item in clientData.buro"
                 :value="item.name"
                 :key="item.id"
               ></option>
               <option
-                v-if="category === 'MUTUOS'"
+                v-if="fileData.category === 'MUTUOS'"
                 v-for="item in clientData.mutuos"
                 :value="item.name"
                 :key="item.id"
               ></option>
               <option
-                v-if="category === 'LABORAL'"
+                v-if="fileData.category === 'LABORAL'"
                 v-for="item in clientData.laboral"
                 :value="item.name"
                 :key="item.id"
               ></option>
               <option
-                v-if="category === 'ALIANZAS Y PROVEEDORES'"
+                v-if="fileData.category === 'ALIANZAS Y PROVEEDORES'"
                 v-for="item in clientData.alianzas"
                 :value="item.name"
                 :key="item.id"
@@ -348,7 +380,7 @@ const getDate = () => {
               >Folio</label
             >
             <input
-              v-model="folio"
+              v-model="fileData.folio"
               @input="updateFileName()"
               type="text"
               name="folio"
@@ -363,13 +395,13 @@ const getDate = () => {
             <select
               @change="updateFileName()"
               required
-              v-model="otherDocument"
+              v-model="fileData.document"
               name="type"
               id="type"
               class="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#A3DEE0]"
             >
               <option
-                v-if="category === 'PYME'"
+                v-if="fileData.category === 'PYME'"
                 v-for="item in documentList.pyme"
                 :value="item.type"
                 :key="item.type"
@@ -377,7 +409,7 @@ const getDate = () => {
                 {{ item.type }}
               </option>
               <option
-                v-if="category === 'FLORESER'"
+                v-if="fileData.category === 'FLORESER'"
                 v-for="item in documentList.floreser"
                 :value="item.type"
                 :key="item.type"
@@ -385,7 +417,7 @@ const getDate = () => {
                 {{ item.type }}
               </option>
               <option
-                v-if="category === 'BURO'"
+                v-if="fileData.category === 'BURO'"
                 v-for="item in documentList.buro"
                 :value="item.type"
                 :key="item.type"
@@ -393,7 +425,7 @@ const getDate = () => {
                 {{ item.type }}
               </option>
               <option
-                v-if="category === 'MUTUOS'"
+                v-if="fileData.category === 'MUTUOS'"
                 v-for="item in documentList.mutuos"
                 :value="item.type"
                 :key="item.type"
@@ -401,7 +433,7 @@ const getDate = () => {
                 {{ item.type }}
               </option>
               <option
-                v-if="category === 'LABORAL'"
+                v-if="fileData.category === 'LABORAL'"
                 v-for="item in documentList.laboral"
                 :value="item.type"
                 :key="item.type"
@@ -409,7 +441,7 @@ const getDate = () => {
                 {{ item.type }}
               </option>
               <option
-                v-if="category === 'ALIANZAS Y PROVEEDORES'"
+                v-if="fileData.category === 'ALIANZAS Y PROVEEDORES'"
                 v-for="item in documentList.alianzas"
                 :value="item.type"
                 :key="item.type"
@@ -431,7 +463,7 @@ const getDate = () => {
                 type="checkbox"
                 name="useComments"
                 id="useComments"
-                v-model="useComments"
+                v-model="fileData.useComments"
                 class="rounded-full border-gray-200"
               />
               <input
@@ -442,15 +474,15 @@ const getDate = () => {
                 type="checkbox"
                 name="useComments"
                 id="useComments"
-                v-model="useComments"
+                v-model="fileData.useComments"
                 class="rounded-full border-gray-300"
               />
             </div>
 
             <input
               @input="updateFileName()"
-              v-model="comments"
-              v-if="otherDocument != 'Otro'"
+              v-model="fileData.comments"
+              v-if="fileData.document != 'Otro'"
               type="text"
               name="comments"
               id="comments"
@@ -458,7 +490,7 @@ const getDate = () => {
             />
             <input
               @input="updateFileName()"
-              v-model="comments"
+              v-model="fileData.comments"
               v-else
               required
               type="text"

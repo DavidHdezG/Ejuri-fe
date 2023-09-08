@@ -260,10 +260,6 @@ watch(
                       class="flex items-center gap-x-1 focus:outline-none"
                     >
                       <span>{{ column }}</span>
-                      <Icon
-                        name="material-symbols:sort-by-alpha-rounded"
-                        size="18"
-                      />
                     </button>
                   </th>
 

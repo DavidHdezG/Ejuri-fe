@@ -1,15 +1,15 @@
 <script setup>
 const props = defineProps(["iconString"]);
 const { iconString } = toRefs(props);
-let icon = ref();
+const icon = ref();
 if (iconString.value === "Digitalización")
   icon.value = "material-symbols:qr-code";
-let showMenu = ref(false);
+const showMenu = ref(false);
 
 const dropdrownList = [
   {
     to: "/qrgen/documents",
-    string: "Documents",
+    string: "Documentos",
     icon: "material-symbols:lab-profile",
   },
   {

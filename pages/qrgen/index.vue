@@ -70,7 +70,19 @@ const documentList = ref({
 
 const data = ref("");
 const image = ref(defaultQr);
+
+// TODO: Cambiar el texto del qr por el objeto json:
+const fileData = ref(
+  {
+    category:null,
+    name:null,
+    folio:null,
+    comments:null,
+    useComments:null
+  }
+)
 $generalStore.stop();
+
 const updateFileName = async () => {
   if (otherDocument.value === "Otro") {
     useComments.value = true;

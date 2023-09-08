@@ -11,7 +11,7 @@ definePageMeta({
 </script>
 
 <template>
-  <MainLayout page-title="Lista de documentos">
+  <MainLayout page-title="Historial de Digitalización">
     <Table/>
  <!--    <div class="flex flex-col items-center justify-center p-7">
 

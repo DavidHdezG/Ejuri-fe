@@ -23,9 +23,7 @@ try {
 } catch (e) {
   console.log(e);
 }
-const name = ref("");
-const folio = ref("");
-const comments = ref("");
+
 const clientData = ref({
   pyme: $generalStore.clientList.filter(
     (item) => item.category.name === "PYME"
@@ -39,13 +37,20 @@ const clientData = ref({
   laboral: $generalStore.clientList.filter(
     (item) => item.category.name === "LABORAL"
   ),
+  // BURO = PYME
   buro: $generalStore.clientList.filter(
-    (item) => item.category.name === "BURO"
+    (item) => item.category.name === "PYME"
   ),
   alianzas: $generalStore.clientList.filter(
     (item) => item.category === "ALIANZAS Y PROVEEDORES"
   ),
 });
+
+console.log($tablesStore.category);
+const name = ref("");
+const folio = ref("");
+const comments = ref("");
+// console.log($generalStore.clientList);
 
 const documentList = ref({
   pyme: $tablesStore.documentList
@@ -134,6 +139,18 @@ const saveHistoric = async () => {
     comments: fileData.comments,
     qr: image.value,
   };
+
+  if (!data.client) {
+    console.log("No existe el cliente");
+    const parentFolderId = data.category;
+    // Debe retornar el id de la nueva carpeta creada
+    data.client = await $generalStore.createClient(
+      fileData.name,
+      parentFolderId
+    );
+    console.log(data.client);
+  }
+
   try {
     const res = await $tablesStore.saveHistoric(data);
     if (res.status === 201) {
@@ -177,17 +194,21 @@ const generate = async () => {
     }; */
 
     const fileDataToQr = {
-      category: fileData.category ? $tablesStore.category.find(
-        (item) => item.name === fileData.category
-      ).id: fileData.category,
-      name: fileData.name? $generalStore.clientList.find(
-        (item) => item.name === fileData.name
-      ).id:fileData.name,
+      category: fileData.category
+        ? $tablesStore.category.find((item) => item.name === fileData.category)
+            .id
+        : fileData.category,
+      name: fileData.name
+        ? $generalStore.clientList.find((item) => item.name === fileData.name)
+            .id
+        : fileData.name,
       folio: fileData.folio,
-      document:fileData.document? $tablesStore.documentList.find(
-        (item) => item.type === fileData.document
-      ).id:fileData.document,
-      comments: fileData.useComments?fileData.comments:"",
+      document: fileData.document
+        ? $tablesStore.documentList.find(
+            (item) => item.type === fileData.document
+          ).id
+        : fileData.document,
+      comments: fileData.useComments ? fileData.comments : "",
       useComments: fileData.useComments,
       date: getDate(),
     };
@@ -459,7 +480,7 @@ const getDate = () => {
               >
               <input
                 @change="updateFileName()"
-                v-if="otherDocument != 'Otro'"
+                v-if="fileData.document != 'Otro'"
                 type="checkbox"
                 name="useComments"
                 id="useComments"

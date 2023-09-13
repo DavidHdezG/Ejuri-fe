@@ -2,8 +2,8 @@ import axios from "axios";
 import { toast } from "vue-sonner"
 export default defineNuxtPlugin((NuxtApp) => {
   axios.defaults.withCredentials = true;
-  /* axios.defaults.baseURL = "https://ejuri-be.onrender.com"; */
-  axios.defaults.baseURL = "http://localhost:3001";
+
+  axios.defaults.baseURL = process.env.API_URL;
   axios.interceptors.response.use(function(response) {
     return response;
   }, function(error){

@@ -3,7 +3,7 @@ import { toast } from "vue-sonner"
 export default defineNuxtPlugin((NuxtApp) => {
   axios.defaults.withCredentials = true;
 
-  axios.defaults.baseURL = process.env.API_URL;
+  axios.defaults.baseURL = "ec2-18-221-113-108.us-east-2.compute.amazonaws.com";
   axios.interceptors.response.use(function(response) {
     return response;
   }, function(error){

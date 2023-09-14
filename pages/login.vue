@@ -7,7 +7,7 @@ const password = ref("");
 const test = async ()=> {
   try {
     const data = await $generalStore.getClientData();
-    console.log(process.env.API_URL);
+    console.log(data);
   } catch (e) {
     console.log(e);
   }
@@ -40,7 +40,7 @@ const login = async () => {
       s="flex flex-col mx-auto items-center justify-center space-y-4 shadow-2xl w-80 h-[450px] rounded-[30px]"
     >
     <button @click="test()">
-    Test {{ process.env.API_URL }}
+    Test
   </button>
       <div class="flex flex-col items-center justify-center">
         <nuxt-img src="logo.png" width="100px" class="mx-auto" />

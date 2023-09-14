@@ -17,6 +17,7 @@ export const useUserStore = defineStore("user", {
         email: email,
         password: password,
       });
+      console.log(data  )
       if (data.error) {
         return (data.error);
       } else {

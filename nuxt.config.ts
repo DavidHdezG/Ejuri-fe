@@ -21,5 +21,9 @@ export default defineNuxtConfig({
     },
   },
   spaLoadingTemplate: './components/Loading.vue',
-  
+/*   runtimeConfig: {
+    public:{
+      API_BASE_URL: process.env.API_BASE_URL
+    }
+  } */
 })

@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-
+    'nuxt-security',
   ],
   build: {
     transpile: ['vuetify'],
@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     },
   },
   spaLoadingTemplate: './components/Loading.vue',
+
 /*   runtimeConfig: {
     public:{
       API_BASE_URL: process.env.API_BASE_URL

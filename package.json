@@ -24,6 +24,7 @@
     "@mdi/font": "^7.2.96",
     "@pinia/nuxt": "^0.4.11",
     "jspdf": "^2.5.1",
+    "nuxt-security": "^0.14.4",
     "pinia": "^2.1.4",
     "qr-scanner": "^1.4.2",
     "qrcode": "^1.5.3",

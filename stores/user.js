@@ -46,9 +46,11 @@ export const useUserStore = defineStore("user", {
     async getCurrentUser() {
       return await $axios.get("/users/user");
     },
-    async changePassword(password) {
+    async changePassword(email,password,newPassword) {
       const data = await $axios.post("/users/changePassword", {
+        email:email,
         password: password,
+        newPassword:newPassword
       });
       return data;
     },

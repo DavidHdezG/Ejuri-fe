@@ -50,7 +50,6 @@ const cancel = () => {
 watch(
   () => creatingDocument.value,
   () => {
-    console.log(creatingDocument.value)
     create.value = creatingDocument.value;
   }
 );

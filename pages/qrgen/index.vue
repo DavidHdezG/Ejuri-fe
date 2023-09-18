@@ -1,5 +1,5 @@
 <script setup>
-import { Toaster, toast } from "vue-sonner";
+import { toast } from "vue-sonner";
 /* Al oprimir guardar se manda a pantalla de imprimir pero no se reinicia el forms */
 
 import { jsPDF } from "jspdf";
@@ -109,7 +109,7 @@ const updateFileName = async () => {
 };
 
 const saveHistoric = async () => {
-  await generate();
+  
   const missingFields =
     !fileData.name ||
     !fileData.folio ||
@@ -127,7 +127,9 @@ const saveHistoric = async () => {
   const data = {
     client: /* fileData.name */ $generalStore.clientList.find(
       (item) => item.name === fileData.name
-    ).id,
+    )
+      ? $generalStore.clientList.find((item) => item.name === fileData.name).id
+      : null,
     folio: fileData.folio,
     category: $tablesStore.category.find(
       (item) => item.name === fileData.category
@@ -142,7 +144,13 @@ const saveHistoric = async () => {
 
   if (!data.client) {
     console.log("No existe el cliente");
-    const parentFolderId = data.category;
+    // * PRUEBAS
+    /* const parentFolderId = "1-uBzk8Ny-mLijePleg02BJ8ROYAb94vr" */
+    
+    // * CARPETA REAL * CUIDADO *
+    const parentFolderId= $tablesStore.category.find(
+      (item) => item.name === fileData.category
+    ).driveId;
     // Debe retornar el id de la nueva carpeta creada
     data.client = await $generalStore.createClient(
       fileData.name,
@@ -152,6 +160,7 @@ const saveHistoric = async () => {
   }
 
   try {
+    await generate();
     const res = await $tablesStore.saveHistoric(data);
     if (res.status === 201) {
       toast.success("Guardado correctamente");
@@ -160,7 +169,8 @@ const saveHistoric = async () => {
       toast.error("Error al guardar");
     }
   } catch (e) {
-    toast.error(`Error al guardar: ${e}`);
+    // toast.error(`Error al guardar: ${e}`);
+    console.log(e)
   }
 };
 const resetForm = () => {
@@ -177,30 +187,19 @@ const generate = async () => {
     return;
   }
   try {
-    /* const data = {
-      client: $generalStore.clientList.find(
-        (item) => item.name === fileData.name
-      ).id,
-      folio: fileData.folio,
-      category: $tablesStore.category.find(
-        (item) => item.name === fileData.category
-      ).id,
-      document: $tablesStore.documentList.find(
-        (item) => item.type === fileData.document
-      ).id,
-      user: $userStore.id,
-      comments: fileData.comments,
-      qr: image.value,
-    }; */
 
     const fileDataToQr = {
       category: fileData.category
-        ? $tablesStore.category.find((item) => item.name === fileData.category)
-            .id
+        ? $generalStore.clientList.find((item) => item.name === fileData.name)
+          ? $generalStore.clientList.find((item) => item.name === fileData.name)
+              .id
+          : null
         : fileData.category,
       name: fileData.name
         ? $generalStore.clientList.find((item) => item.name === fileData.name)
-            .id
+          ? $generalStore.clientList.find((item) => item.name === fileData.name)
+              .id
+          : null
         : fileData.name,
       folio: fileData.folio,
       document: fileData.document
@@ -212,7 +211,6 @@ const generate = async () => {
       useComments: fileData.useComments,
       date: getDate(),
     };
-
     const dataToQR = JSON.stringify(fileDataToQr);
     const qrcode = await QRCode.toDataURL(dataToQR);
     image.value = qrcode;

@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { useUserStore } from "./user";
 import axios from "../plugins/axios";
-
 const $axios = axios().provide.axios;
+
 
 export const useGeneralStore = defineStore("general", {
   state: () => ({
@@ -20,8 +20,8 @@ export const useGeneralStore = defineStore("general", {
     }, */
     async createClient(folderName, parentFolderId) {
       const { data } = await $axios.post("/client", {
-        folderName: folderName,
-        parentFolderId: parentFolderId,
+        name: folderName,
+        id: parentFolderId,
       });
       return data.id;
     },

@@ -1,9 +1,9 @@
 import axios from "axios";
 import { toast } from "vue-sonner"
 export default defineNuxtPlugin((NuxtApp) => {
-  axios.defaults.withCredentials = true;
 /*   const config = useRuntimeConfig(); */
-  axios.defaults.baseURL = "http://18.222.37.105:3001";
+  axios.defaults.withCredentials = true;
+  axios.defaults.baseURL = "http://localhost:3001/";
   axios.interceptors.response.use(function(response) {
     return response;
   }, function(error){

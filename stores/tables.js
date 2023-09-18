@@ -24,6 +24,7 @@ export const useTablesStore = defineStore("tables", {
       {
         id: null,
         name: null,
+        driveId:null
       },
     ],
     overlayQr: false,

@@ -1,5 +1,9 @@
 <script setup>
+import { storeToRefs } from 'pinia';
 
+
+const { $userStore } = useNuxtApp();
+const { role } = storeToRefs($userStore);
 </script>
 
 <template>
@@ -13,6 +17,9 @@
             <div id="menu" class="flex flex-col space-y-2">
                 <NuxtLink to="/">
                     <SideMenuItem iconString='Inicio'/>
+                </NuxtLink>
+                <NuxtLink to="/admin/users" v-if="role==='Administrador'">
+                    <SideMenuItem iconString='Administración'/>
                 </NuxtLink>
                 <NuxtLink to="/qrgen">
                     <SideMenuDropdown iconString='Digitalización' />

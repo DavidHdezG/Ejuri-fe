@@ -20,4 +20,7 @@ if (iconString.value === "Digitalización") {
   icon.value = "material-symbols:qr-code";
   dropdown.value = true;
 }
+if (iconString.value === "Administración") {
+  icon.value = "material-symbols:admin-panel-settings";
+}
 </script>

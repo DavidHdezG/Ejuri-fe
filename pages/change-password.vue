@@ -1,5 +1,5 @@
 <script setup>
-import {Toaster, toast } from "vue-sonner";
+import { Toaster, toast } from "vue-sonner";
 const showPass = ref(false);
 const { $userStore } = useNuxtApp();
 const password = ref("");
@@ -8,27 +8,21 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const changePassword= ()=>
-{
+const changePassword = () => {
   const email = $userStore.email;
-  if(password.value != password2.value){
-    toast.error("Las contraseñas no coinciden");
-  }else{
-    const data = $userStore.changePassword(email,password, password2);
-    if(!data){
-      toast.error("Error al cambiar la contraseña");
-    }else{
-      toast.success("Contraseña cambiada con éxito");
-      $userStore.logout();
-    }
 
+  const data = $userStore.changePassword(email, password.value, password2.value);
+  if (!data) {
+    toast.error("Error al cambiar la contraseña");
+  } else {
+    toast.success("Contraseña cambiada con éxito");
+    $userStore.logout();
   }
-}
-
+}; 
 
 const togglePass = () => {
   showPass.value = !showPass.value;
-  var x = document.getElementById("password");
+  var x = document.getElementById("password2");
   if (x.type === "password") {
     x.type = "text";
   } else {
@@ -38,7 +32,7 @@ const togglePass = () => {
 </script>
 
 <template>
-  <Toaster/>
+  <Toaster />
   <div class="h-screen h-screen flex items-center justify-center">
     <div
       class="flex flex-col mx-auto items-center justify-center space-y-4 shadow-2xl w-80 h-[450px] rounded-[30px]"
@@ -57,7 +51,16 @@ const togglePass = () => {
             id="password"
             type="password"
             v-model="password"
-            placeholder="Contraseña"
+            placeholder="Contraseña actual"
+            class="border border-gray-300 text-center rounded-full focus:outline-none focus:border-[#A3DEE0] p-2 m-2"
+          />
+          
+          <input
+            required
+            id="password2"
+            type="password"
+            v-model="password2"
+            placeholder="Nueva contraseña"
             class="border border-gray-300 text-center rounded-full focus:outline-none focus:border-[#A3DEE0] p-2 m-2"
           />
           <button @click="togglePass()">
@@ -70,14 +73,6 @@ const togglePass = () => {
             />
             <Icon name="ph:eye-light" v-else size="22" color="#888888" />
           </button>
-          <input
-            required
-            id="password2"
-            type="password"
-            v-model="password2"
-            placeholder="Confirma tu contraseña"
-            class="border border-gray-300 text-center rounded-full focus:outline-none focus:border-[#A3DEE0] p-2 m-2"
-          />
         </div>
         <div class="flex flex-col items-center justify-center">
           <button

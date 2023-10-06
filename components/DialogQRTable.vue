@@ -7,8 +7,8 @@ const qr = ref("");
 
 const printQr = async () => {
   const imagen = qr.value;
-  const text = await QRScanner.scanImage(imagen);
-
+  const textScan = await QRScanner.scanImage(imagen);
+  const text=JSON.parse(textScan);
   // Crea un nuevo objeto de imagen para asegurar que la imagen se cargue completamente
   const img = new Image();
   img.src = imagen;
@@ -18,9 +18,9 @@ const printQr = async () => {
     <html>
       <head><title>QR</title></head>
       <body>
-          <h1>${text.split("/")[2]}</h1>
+          <h1>${text.folio}</h1>
           <img src="${img.src}" alt="">
-          <p>${text}</p>
+          <p>${text.folio} - ${text.date}</p>
       </body>
 
       <style>

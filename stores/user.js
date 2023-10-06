@@ -25,7 +25,7 @@ export const useUserStore = defineStore("user", {
         this.id = result.data.id;
         this.name = result.data.name;
         this.email = result.data.email;
-        this.role = result.data.role;
+        this.role = result.data.roles.name;
       }
       /* return navigateTo("/"); */
     },
@@ -48,12 +48,17 @@ export const useUserStore = defineStore("user", {
     },
     async changePassword(email,password,newPassword) {
       const data = await $axios.post("/users/changePassword", {
-        email:email,
         password: password,
         newPassword:newPassword
       });
       return data;
     },
+    async confirmAccount(token){
+      const data = await $axios.post(`/users/confirmAccount/${token}`);
+      return data;
+    },
+
+
     resetUser() {
       this.id = "";
       this.name = "";

@@ -1,6 +1,5 @@
 <script setup>
 import { toast } from "vue-sonner";
-/* Al oprimir guardar se manda a pantalla de imprimir pero no se reinicia el forms */
 
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
@@ -11,46 +10,41 @@ const { $userStore } = useNuxtApp();
 definePageMeta({
   middleware: ["auth"],
 });
-
-const category = ref("");
-const useComments = ref(false);
-const otherDocument = ref("");
+// TODO: HACER QUE SE ACTUALICE AL CREAR UN NUEVO CLIENTE
+const clientData = ref([]);
+const updateClientData = async () => {
+  await $generalStore.getClientData();
+  clientData.value = {
+    pyme: $generalStore.clientList.filter(
+      (item) => item.category.name === "PYME"
+    ),
+    floreser: $generalStore.clientList.filter(
+      (item) => item.category.name === "FLORESER"
+    ),
+    mutuos: $generalStore.clientList.filter(
+      (item) => item.category.name === "MUTUOS"
+    ),
+    laboral: $generalStore.clientList.filter(
+      (item) => item.category.name === "LABORAL"
+    ),
+    // BURO = PYME y FLORESER
+    buro: $generalStore.clientList.filter(
+      (item) => item.category.name === "PYME"||item.category.name==="FLORESER"
+    ),
+    alianzas: $generalStore.clientList.filter(
+      (item) => item.category === "ALIANZAS Y PROVEEDORES"
+    ),
+  };
+};
 try {
   $generalStore.start();
   await $tablesStore.getDocumentList();
   await $tablesStore.getCategoryData();
-  await $generalStore.getClientData();
+  updateClientData();
+  /* await $generalStore.getClientData(); */
 } catch (e) {
   console.log(e);
 }
-
-const clientData = ref({
-  pyme: $generalStore.clientList.filter(
-    (item) => item.category.name === "PYME"
-  ),
-  floreser: $generalStore.clientList.filter(
-    (item) => item.category.name === "FLORESER"
-  ),
-  mutuos: $generalStore.clientList.filter(
-    (item) => item.category.name === "MUTUOS"
-  ),
-  laboral: $generalStore.clientList.filter(
-    (item) => item.category.name === "LABORAL"
-  ),
-  // BURO = PYME
-  buro: $generalStore.clientList.filter(
-    (item) => item.category.name === "PYME"
-  ),
-  alianzas: $generalStore.clientList.filter(
-    (item) => item.category === "ALIANZAS Y PROVEEDORES"
-  ),
-});
-
-console.log($tablesStore.category);
-const name = ref("");
-const folio = ref("");
-const comments = ref("");
-// console.log($generalStore.clientList);
 
 const documentList = ref({
   pyme: $tablesStore.documentList
@@ -76,7 +70,6 @@ const documentList = ref({
 const data = ref("");
 const image = ref(defaultQr);
 
-// TODO: Cambiar el texto del qr por el objeto json:
 const fileData = reactive({
   category: null,
   name: null,
@@ -109,7 +102,6 @@ const updateFileName = async () => {
 };
 
 const saveHistoric = async () => {
-  
   const missingFields =
     !fileData.name ||
     !fileData.folio ||
@@ -146,9 +138,9 @@ const saveHistoric = async () => {
     console.log("No existe el cliente");
     // * PRUEBAS
     /* const parentFolderId = "1-uBzk8Ny-mLijePleg02BJ8ROYAb94vr" */
-    
+
     // * CARPETA REAL * CUIDADO *
-    const parentFolderId= $tablesStore.category.find(
+    const parentFolderId = $tablesStore.category.find(
       (item) => item.name === fileData.category
     ).driveId;
     // Debe retornar el id de la nueva carpeta creada
@@ -157,6 +149,8 @@ const saveHistoric = async () => {
       parentFolderId
     );
     console.log(data.client);
+    fileData.name = data.client;
+    updateClientData();
   }
 
   try {
@@ -170,7 +164,7 @@ const saveHistoric = async () => {
     }
   } catch (e) {
     // toast.error(`Error al guardar: ${e}`);
-    console.log(e)
+    console.log(e);
   }
 };
 const resetForm = () => {
@@ -187,20 +181,17 @@ const generate = async () => {
     return;
   }
   try {
-
+    const client = $generalStore.clientList.find(
+      (item) => item.name === fileData.name
+    );
     const fileDataToQr = {
-      category: fileData.category
-        ? $generalStore.clientList.find((item) => item.name === fileData.name)
-          ? $generalStore.clientList.find((item) => item.name === fileData.name)
-              .id
-          : null
-        : fileData.category,
-      name: fileData.name
-        ? $generalStore.clientList.find((item) => item.name === fileData.name)
-          ? $generalStore.clientList.find((item) => item.name === fileData.name)
-              .id
-          : null
-        : fileData.name,
+      category: $tablesStore.category.find(
+        (item) => item.name === fileData.category
+      )
+        ? $tablesStore.category.find((item) => item.name === fileData.category)
+            .id
+        : null,
+      name: client ? client.id : fileData.name,
       folio: fileData.folio,
       document: fileData.document
         ? $tablesStore.documentList.find(
@@ -211,6 +202,7 @@ const generate = async () => {
       useComments: fileData.useComments,
       date: getDate(),
     };
+    console.log(fileDataToQr.name);
     const dataToQR = JSON.stringify(fileDataToQr);
     const qrcode = await QRCode.toDataURL(dataToQR);
     image.value = qrcode;
@@ -341,7 +333,7 @@ const getDate = () => {
         <div class="w-full mx-auto bg-white pl-8 pr-8 pb-8 rounded-b-[30px]">
           <div class="mb-4">
             <label for="name" class="block text-gray-700 text-sm font-bold mb-2"
-              >Nombre</label
+              >Nombre de cliente</label
             >
             <input
               @input="updateFileName()"
@@ -396,7 +388,7 @@ const getDate = () => {
             <label
               for="folio"
               class="block text-gray-700 text-sm font-bold mb-2"
-              >Folio</label
+              >Folio/Nombre</label
             >
             <input
               v-model="fileData.folio"

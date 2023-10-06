@@ -2,8 +2,8 @@
 import { storeToRefs } from "pinia";
 const { $tablesStore } = useNuxtApp();
 const { confirmDelete, showConfirm } = storeToRefs($tablesStore);
-const props =defineProps(["string"]);
-const { string } = toRefs(props);
+const props =defineProps(["string","type"]);
+const { string,type } = toRefs(props);
 const confirm = () => {
   confirmDelete.value = true;
   showConfirm.value = false;
@@ -17,7 +17,7 @@ const cancel = () => {
   <div class="text-center absolute w-[400px]">
     <v-dialog rounded v-model="showConfirm" width="auto">
       <v-card>
-        <v-card-title class="headline">¿Eliminar el documento con {{string}}?</v-card-title>
+        <v-card-title class="headline">¿Eliminar el {{ type }} {{string}}?</v-card-title>
         <div class="flex items-center justify-evenly py-2">
           <button
             @click="cancel()"

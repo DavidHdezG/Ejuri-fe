@@ -80,11 +80,9 @@ watch(
       </template> -->
       <v-card>
         <div class="flex flex-col items-center space-y-4 py-6 px-4">
-          <div class="text-lg" v-if="create">
-            <span>Agregar documento</span>
-          </div>
-          <div class="text-lg" v-else>
-            <span>Editar {{ id }}</span>
+          <div class="text-lg" >
+            <span v-if="create">Agregar documento</span>
+            <span  v-else>Editar {{ id }}</span>
           </div>
           <div class="" id="formid">
             <div class="flex flex-col items-center justify-center space-y-4">

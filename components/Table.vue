@@ -193,7 +193,7 @@ watch(
     <Teleport to="body">
       <DialogTableItem />
       <DialogQRTable />
-      <ConfirmAlert :string="infoDocumentToDelete" />
+      <ConfirmAlert :string="infoDocumentToDelete" type="documento con ID"/>
     </Teleport>
     <div class="mt-6 md:flex md:items-center md:justify-between">
       <div
@@ -290,7 +290,7 @@ watch(
                       />
                     </button>
                     <button
-                      v-if="role === 'admin'"
+                      v-if="role === 'Administrador'"
                       @click="deleteItemConfirm(item.id)"
                       class="px-1 py-1 text-gray-500 hover:text-red-500 transition-colors duration-200 rounded-lg hover:bg-gray-100"
                     >

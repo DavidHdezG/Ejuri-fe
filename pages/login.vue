@@ -34,7 +34,7 @@ const login = async () => {
 
 <template>
   <Toaster/>
-  <div class="h-screen h-screen flex items-center justify-center">
+  <div class="h-screen h-screen flex items-center justify-center" v-on:keyup.enter="login()">
     <div
       clas
       s="flex flex-col mx-auto items-center justify-center space-y-4 shadow-2xl w-80 h-[450px] rounded-[30px]"

@@ -6,14 +6,14 @@ const route = useRoute();
 const { $generalStore, $tablesStore, $userStore } = useNuxtApp();
 const { role } = storeToRefs($userStore);
 const { edited, confirmDelete,showConfirm } = storeToRefs($tablesStore);
-let fragmentedData = [];
-const infoDocumentToDelete = ref(null);
-let filters = [];
-const idToRemove=ref(null);
-let columns = [];
-const data = ref([]);
-const totalPages = ref(1);
-const currentPage = ref(1);
+let fragmentedData = []; // Fragmented data to paginate
+const infoDocumentToDelete = ref(null); // Document ID to delete
+let filters = []; // Filters to show
+const idToRemove=ref(null); // QrHistoric ID to delete
+let columns = []; // Table columns
+const data = ref([]); // Table data
+const totalPages = ref(1); // Total pages
+const currentPage = ref(1); // Current page
 onMounted(async () => {
   filters = [
     "PYME",
@@ -26,6 +26,9 @@ onMounted(async () => {
   ];
   try {
     $generalStore.start();
+    /**
+     * Check the route name to get the data
+     */
     if (route.name === "qrgen-documents") {
       columns = ["ID", "Tipo", "Categoría", "Duplicado", "Operación"];
       await $tablesStore.getCategoryData();
@@ -53,17 +56,27 @@ onMounted(async () => {
   }
 });
 
-const divideData = (arr, tamanoParte) => {
-  const partes = [];
-  const longitud = arr.length;
+/**
+ * Divide the data in parts to paginate
+ * @param {array} arr Data to divide
+ * @param {number} size Size of the parts
+ * @returns {array} Data divided
+ */
+const divideData = (arr, size) => {
+  const pieces = [];
+  const lenght = arr.length;
 
-  for (let i = 0; i < longitud; i += tamanoParte) {
-    partes.push(arr.slice(i, i + tamanoParte));
+  for (let i = 0; i < lenght; i += size) {
+    pieces.push(arr.slice(i, i + size));
   }
 
-  return partes;
+  return pieces;
 };
 
+/**
+ * Reset the data to the first page
+ * @param {array} arr Data to reset
+ */
 const resetData = (arr) => {
   data.value = [];
   currentPage.value = 1;
@@ -72,6 +85,9 @@ const resetData = (arr) => {
   data.value = fragmentedData[currentPage.value - 1];
 };
 
+/**
+ * Go to the next page
+ */
 const NextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
@@ -79,6 +95,9 @@ const NextPage = () => {
   }
 };
 
+/**
+ * Go to the previous page
+ */
 const PreviousPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
@@ -86,6 +105,12 @@ const PreviousPage = () => {
   }
 };
 
+/**
+ * Filter any data by category
+ * @param {string} type Category to filter
+ * @param {array} list List to filter
+ * @returns {array} Filtered list
+ */
 const filterByCategory = (type, list) => {
   return type === "Todo"
     ? list
@@ -94,6 +119,10 @@ const filterByCategory = (type, list) => {
       );
 };
 
+/**
+ * Filter the data by category and reset the data to the first page
+ * @param {string} type Category to filter
+ */
 const filterData = (type) => {
   let temp = [];
 
@@ -107,6 +136,10 @@ const filterData = (type) => {
   resetData(temp);
 };
 
+/**
+ * Search data in the table
+ * @param {string} input Input to search
+ */
 const searchData = (input) => {
   let temp = [];
   if (route.name === "qrgen-documents") {
@@ -133,6 +166,9 @@ const searchData = (input) => {
   resetData(temp);
 };
 
+/**
+ * Add a new document, set overlayEdit to true with creatingDocument to true to show the dialog to add a new document
+ */
 const add = async () => {
   $tablesStore.emptyDocumentToEdit();
   $tablesStore.creatingDocument = true;
@@ -140,12 +176,20 @@ const add = async () => {
   $tablesStore.overlayEdit = true;
 };
 
+/**
+ * Edit a document, set overlayEdit to true and creatingDocument to false to show the dialog to edit a document
+ * @param {number} id 
+ */
 const edit = async (id) => {
   await $tablesStore.getDocumentToEdit(id);
   $tablesStore.creatingDocument = false;
   $tablesStore.overlayEdit = true;
 };
 
+/**
+ * Remove a document or qr historic, set edited to true to reload the document list
+ * @param {number} id Document ID to remove
+ */
 const remove = async (id) => {
   if (route.name === "qrgen-documents") {
     $tablesStore.deleteDocument(id);
@@ -155,16 +199,31 @@ const remove = async (id) => {
   toast.success("Documento eliminado");
   $tablesStore.edited = true;
 };
+
+/**
+ * Set the document ID to delete and show the confirm dialog
+ * @param {number} id Document ID to delete
+ */
 const deleteItemConfirm = async (id)=>{
   infoDocumentToDelete.value= `ID: ${id}`;
   idToRemove.value=id;
   showConfirm.value=true;
 }
+
+/**
+ * Set overlayQr to true to show the QR dialog of a historic 
+ * @param {number} id Document ID to view
+ */
 const viewQR = async (id) => {
   await $tablesStore.getQrToView(id).then(() => {
     $tablesStore.overlayQr = true;
   });
 };
+
+/**
+ * Watch if the user confirmed the delete action and delete the document
+ * @param {number} id Document ID to view
+ */
 watch(
   () => confirmDelete.value,
   async () => {
@@ -175,6 +234,9 @@ watch(
   }
 );
 
+/**
+ * Watch if the user edited a document and reload the document list
+ */
 watch(
   () => edited.value,
   async () => {

@@ -3,8 +3,11 @@ const { $tablesStore } = useNuxtApp();
 import { storeToRefs } from "pinia";
 import QRScanner from "qr-scanner";
 const { qrToView, overlayQr } = storeToRefs($tablesStore);
-const qr = ref("");
+const qr = ref(""); // QR image in base64
 
+/**
+ * Scan the QR code and set the data in an empty page to print
+ */
 const printQr = async () => {
   const imagen = qr.value;
   const textScan = await QRScanner.scanImage(imagen);
@@ -45,6 +48,9 @@ const printQr = async () => {
     };
   };
 };
+/**
+ * Set the current QR code to the QR image to view
+ */
 watch(
   () => qrToView.value,
   () => {

@@ -3,10 +3,13 @@ import { storeToRefs } from "pinia";
 import { toast } from "vue-sonner"
 const { $adminStore } = useNuxtApp();
 const { showOverlay, editingUser, roleIdToEdit } = storeToRefs($adminStore);
-const name = ref("");
-const id = ref("");
+const name = ref(""); // Role name
+const id = ref(""); // Role ID
 watch(
   () => showOverlay.value,
+  /**
+   * Check if ShowOverlay is true to show the dialog and if editingUser is true to get the user data to edit
+   */
   async () => {
     if (showOverlay.value) {
       if (editingUser.value) {
@@ -23,10 +26,16 @@ watch(
   }
 );
 
+/**
+ * Set ShowOverlay to false to hide the dialog
+ */
 const cancel = () => {
   showOverlay.value = false;
 };
 
+/**
+ * Create a new role, set ShowOverlay to false to hide the dialog and reload the role list
+ */
 const createRole = async () => {
   try {
     const res = await $adminStore.createRole(id.value,name.value);
@@ -41,6 +50,9 @@ const createRole = async () => {
   }
 };
 
+/**
+ * Edit a role, set ShowOverlay to false to hide the dialog and reload the role list
+ */
 const editRole = async () => {
   try {
 

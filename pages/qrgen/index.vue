@@ -1,6 +1,5 @@
 <script setup>
 import { toast } from "vue-sonner";
-
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 const defaultQr = "/qrcode.png";
@@ -10,8 +9,11 @@ const { $userStore } = useNuxtApp();
 definePageMeta({
   middleware: ["auth"],
 });
-// TODO: HACER QUE SE ACTUALICE AL CREAR UN NUEVO CLIENTE
+
 const clientData = ref([]);
+/**
+ * Get the client list and update the clientData object to filter the clients by category and use it in the form
+ */
 const updateClientData = async () => {
   await $generalStore.getClientData();
   clientData.value = {
@@ -29,13 +31,17 @@ const updateClientData = async () => {
     ),
     // BURO = PYME y FLORESER
     buro: $generalStore.clientList.filter(
-      (item) => item.category.name === "PYME"||item.category.name==="FLORESER"
+      (item) =>
+        item.category.name === "PYME" || item.category.name === "FLORESER"
     ),
     alianzas: $generalStore.clientList.filter(
       (item) => item.category === "ALIANZAS Y PROVEEDORES"
     ),
   };
 };
+/**
+ * Get the document list and the category list
+ */
 try {
   $generalStore.start();
   await $tablesStore.getDocumentList();
@@ -46,6 +52,9 @@ try {
   console.log(e);
 }
 
+/**
+ * Filter the document list by category and sort it alphabetically
+ */
 const documentList = ref({
   pyme: $tablesStore.documentList
     .filter((item) => item.category.name === "PYME")
@@ -60,7 +69,7 @@ const documentList = ref({
     .filter((item) => item.category.name === "LABORAL")
     .sort((a, b) => a.type.localeCompare(b.type)),
   buro: $tablesStore.documentList
-    .filter((item) => item.category.name === "BURO")
+    .filter((item) => item.category.name === "CARTAS DE BURO")
     .sort((a, b) => a.type.localeCompare(b.type)),
   alianzas: $tablesStore.documentList
     .filter((item) => item.category.name === "ALIANZAS Y PROVEEDORES")
@@ -70,6 +79,9 @@ const documentList = ref({
 const data = ref("");
 const image = ref(defaultQr);
 
+/**
+ * Store the data of the form
+ */
 const fileData = reactive({
   category: null,
   name: null,
@@ -80,6 +92,9 @@ const fileData = reactive({
 });
 $generalStore.stop();
 
+/**
+ * Update the file name when the form data changes and generate the QR code
+ */
 const updateFileName = async () => {
   if (fileData.document === "Otro") {
     fileData.useComments = true;
@@ -101,6 +116,9 @@ const updateFileName = async () => {
   }
 };
 
+/**
+ * Checks if any input is empty, checks if the client exists (if not, creates a new one), generates the QR code and saves the data in the database
+ */
 const saveHistoric = async () => {
   const missingFields =
     !fileData.name ||
@@ -110,16 +128,14 @@ const saveHistoric = async () => {
     !image.value;
 
   const missingComments = !fileData.comments && fileData.useComments;
-
+  // Checks if any input is empty
   if (missingFields || missingComments) {
     toast.error("Faltan campos por llenar");
     return;
   }
-  // TODO: Hacer que si el cliente no existe se cree uno nuevo
+  //Aux data to generate the QR
   const data = {
-    client: /* fileData.name */ $generalStore.clientList.find(
-      (item) => item.name === fileData.name
-    )
+    client: $generalStore.clientList.find((item) => item.name === fileData.name)
       ? $generalStore.clientList.find((item) => item.name === fileData.name).id
       : null,
     folio: fileData.folio,
@@ -134,25 +150,25 @@ const saveHistoric = async () => {
     qr: image.value,
   };
 
+  // If client doesn't exists, create a new one and update the clientData object with the new ID
   if (!data.client) {
-    console.log("No existe el cliente");
-    // * PRUEBAS
-    /* const parentFolderId = "1-uBzk8Ny-mLijePleg02BJ8ROYAb94vr" */
-
-    // * CARPETA REAL * CUIDADO *
     const parentFolderId = $tablesStore.category.find(
       (item) => item.name === fileData.category
     ).driveId;
-    // Debe retornar el id de la nueva carpeta creada
     data.client = await $generalStore.createClient(
       fileData.name,
       parentFolderId
     );
-    console.log(data.client);
-    fileData.name = data.client;
-    updateClientData();
+    await updateClientData();
+    fileData.name = $generalStore.clientList.find(
+      (item) => item.id === data.client
+    ).name;
+    console.log(
+      fileData.name
+    );
   }
 
+  // Generate the new QR code, save the data in the database and print the QR
   try {
     await generate();
     const res = await $tablesStore.saveHistoric(data);
@@ -167,6 +183,9 @@ const saveHistoric = async () => {
     console.log(e);
   }
 };
+/**
+ * Reset the form
+ */
 const resetForm = () => {
   fileData.name = "";
   fileData.folio = "";
@@ -175,6 +194,10 @@ const resetForm = () => {
   fileData.comments = "";
   image.value = defaultQr;
 };
+
+/**
+ * Checks if the form data is valid and generates the QR code
+ */
 const generate = async () => {
   if (!data.value) {
     image.value = defaultQr;
@@ -211,6 +234,9 @@ const generate = async () => {
   }
 };
 
+/**
+ * Download the QR code as a PDF
+ */
 const download = async () => {
   const imagen = document.getElementById("qr-img");
   const img = new Image();
@@ -230,16 +256,19 @@ const download = async () => {
   );
 };
 
+/**
+ * Print the QR code
+ * @param {boolean} save If true, reset the form after printing
+ */
 const print = async (save = false) => {
   const imagen = document.getElementById("qr-img");
-
-  // Crea un nuevo objeto de imagen para asegurar que la imagen se cargue completamente
   const img = new Image();
   img.src = imagen.src;
 
   img.onload = function () {
-    const ventana = window.open("", "_blank");
-    ventana.document.write(`
+    const tab = window.open("", "_blank");
+    console.log(fileData.name);
+    tab.document.write(`
     <html>
       <head><title>QR</title></head>
       <body>
@@ -263,12 +292,12 @@ const print = async (save = false) => {
           }
       </style>
     </html>`);
-    ventana.document.close();
+    tab.document.close();
 
-    // Espera a que la imagen se cargue completamente en la ventana emergente antes de imprimir
-    ventana.onload = function () {
-      ventana.print();
-      ventana.close();
+    // Wait for the image to load completely in the popup window before printing
+    tab.onload = function () {
+      tab.print();
+      tab.close();
       if (save) {
         resetForm();
       }
@@ -276,12 +305,16 @@ const print = async (save = false) => {
   };
 };
 
+/**
+ * Get the current date in the format dd-mm-yy
+ * @returns {string} The current date in the format dd-mm-yy
+ */
 const getDate = () => {
   const timestamp = Date.now();
   const date = new Date(timestamp);
 
   const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Se agrega +1 al month porque los meses se representan de 0 a 11
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear().toString().slice(-2);
 
   return `${day}-${month}-${year}`;
@@ -359,7 +392,7 @@ const getDate = () => {
                 :key="item.id"
               ></option>
               <option
-                v-if="fileData.category === 'BURO'"
+                v-if="fileData.category === 'CARTAS DE BURO'"
                 v-for="item in clientData.buro"
                 :value="item.name"
                 :key="item.id"
@@ -428,7 +461,7 @@ const getDate = () => {
                 {{ item.type }}
               </option>
               <option
-                v-if="fileData.category === 'BURO'"
+                v-if="fileData.category === 'CARTAS DE BURO'"
                 v-for="item in documentList.buro"
                 :value="item.type"
                 :key="item.type"

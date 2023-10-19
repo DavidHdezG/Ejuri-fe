@@ -1,18 +1,23 @@
 <script setup>
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from "pinia";
 
 const { $adminStore, $userStore, $tablesStore } = useNuxtApp();
 const { confirmDelete, showConfirm } = storeToRefs($tablesStore);
 const { rolesList, editingUser, showOverlay, roleIdToEdit } =
   storeToRefs($adminStore);
-const roleToDelete = ref(null);
-const columns = ["ID", "Nombre", "Acciones"];
-const tempFullList = ref([]);
+const roleToDelete = ref(null); // Role ID to delete
+const columns = ["ID", "Nombre", "Acciones"]; // Table columns
+const tempFullList = ref([]); // Temporal list to search data
+
 onMounted(async () => {
-  tempFullList.value=await $adminStore.getRolesList();
+  tempFullList.value = await $adminStore.getRolesList();
 });
+
 watch(
   () => confirmDelete.value,
+  /**
+   * Check if the user confirmed the delete action and delete the user and reload the list
+   */
   async () => {
     if (confirmDelete.value) {
       await $adminStore.deleteRole(roleToDelete.value);
@@ -22,23 +27,46 @@ watch(
   }
 );
 
+/**
+ * Set Show Overlay to true and set editingUser to false to show the dialog to add a new role
+ */
 const addRoleButton = () => {
   editingUser.value = false;
   showOverlay.value = true;
 };
+
+/**
+ * Set Show Overlay to true and set editingUser to true to show the dialog to edit a role
+ * @param {number} id Role ID to edit
+ */
 const editRoleButton = (id) => {
-    roleIdToEdit.value = id;
+  roleIdToEdit.value = id;
   editingUser.value = true;
   showOverlay.value = true;
 };
+
+/**
+ * Set the role ID to delete and show the confirm dialog
+ * @param {number} id Role ID to delete
+ */
 const deleteRole = async (id) => {
   roleToDelete.value = id;
   console.log(roleToDelete.value);
   showConfirm.value = true;
 };
-const setRoleList=(list=tempFullList.value)=>{
-    rolesList.value=list;
-}
+
+/**
+ * Set the role list to the full list or the filtered list
+ * @param {array} list List to set
+ */
+const setRoleList = (list = tempFullList.value) => {
+  rolesList.value = list;
+};
+
+/**
+ * Search data in the table
+ * @param {string} input Input to search
+ */
 const searchData = (input) => {
   if (input === "") {
     setRoleList();
@@ -61,7 +89,6 @@ const searchData = (input) => {
 
     <div class="flex align-center justify-between">
       <div class="flex align-center mt-4 space-x-4">
-
         <div class="relative flex items-center md:mt-0">
           <span class="absolute">
             <Icon
@@ -87,7 +114,6 @@ const searchData = (input) => {
           </button>
         </div>
       </div>
-      
     </div>
 
     <div class="flex flex-col mt-4">

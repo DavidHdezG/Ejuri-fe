@@ -1,3 +1,4 @@
+<!-- SideMenuItem component with dropdrown list -->
 <script setup>
 const props = defineProps(["iconString"]);
 const { iconString } = toRefs(props);

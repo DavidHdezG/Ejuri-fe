@@ -1,3 +1,20 @@
+<script setup>
+const props = defineProps(["pageTitle"]);
+const { pageTitle } = toRefs(props);
+const { $userStore } = useNuxtApp();
+const showMenu = ref(false);
+/**
+ * Logout the user and redirect to the login page
+ */
+const logout = async () => {
+  try {
+    $userStore.logout();
+    //navigateTo("/");
+  } catch (e) {
+    console.log(e);
+  }
+};
+</script>
 <template>
   <div
     id="header"
@@ -59,20 +76,7 @@
     </div>
   </div>
 </template>
-<script setup>
-const props = defineProps(["pageTitle"]);
-const { pageTitle } = toRefs(props);
-const { $userStore } = useNuxtApp();
-const showMenu = ref(false);
-const logout = async () => {
-  try {
-    $userStore.logout();
-    //navigateTo("/");
-  } catch (e) {
-    console.log(e);
-  }
-};
-</script>
+
 <style scoped>
 .v-enter-active,
 .v-leave-active {

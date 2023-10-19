@@ -1,3 +1,4 @@
+<!-- Loading component  -->
 <template>
   <div v-if="$generalStore.isLoading" >
     <div class="loading-page">Cargando...</div>

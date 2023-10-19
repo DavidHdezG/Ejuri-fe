@@ -2,17 +2,19 @@
 import { storeToRefs} from "pinia";
 const { $tablesStore } = useNuxtApp();
 const { overlayEdit, edited,  documentToEdit, creatingDocument } = storeToRefs($tablesStore);
-const create = ref(false);
-const id = ref();
-const type = ref();
-const categoryInput = ref();
-const duplicate = ref(false);
+const create = ref(false); // Is creating a new item(true) or editing an existing one(false)
+const id = ref(); // Item ID
+const type = ref(); // Item type
+const categoryInput = ref(); // Item category
+const duplicate = ref(false); // Is the Item a duplicate
 /* try {
   $tablesStore.getCategoryData();
 } catch (e) {
   console.log(e);
 } */
-
+/**
+ * Edit a document, set overlayEdit to false to hide the dialog
+ */
 const editDoc = async () => {
   try {
     await $tablesStore.editDocument(
@@ -28,6 +30,9 @@ const editDoc = async () => {
   }
 };
 
+/**
+ * Save a new document, set overlayEdit to false to hide the dialog
+ */
 const saveDoc = async () => {
   try {
     await $tablesStore.saveDocument(
@@ -43,16 +48,26 @@ const saveDoc = async () => {
   }
 };
 
+/**
+ * Set overlayEdit to false to hide the dialog
+ */
+
 const cancel = () => {
   overlayEdit.value = false;
   creatingDocument.value = false;
 };
+
+
 watch(
   () => creatingDocument.value,
   () => {
     create.value = creatingDocument.value;
   }
 );
+
+/**
+ * Copy the data from the documentToEdit store to the local variables to show them in the dialog
+ */
 watch(
   () => documentToEdit.value,
   () => {

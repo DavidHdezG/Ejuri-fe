@@ -4,10 +4,16 @@ const { $tablesStore } = useNuxtApp();
 const { confirmDelete, showConfirm } = storeToRefs($tablesStore);
 const props =defineProps(["string","type"]);
 const { string,type } = toRefs(props);
+/**
+ * Set the confirm option to true to perform an action and hide the confirm dialog
+ */
 const confirm = () => {
   confirmDelete.value = true;
   showConfirm.value = false;
 };
+/**
+ * Set the confirm option to false to hide the confirm dialog
+ */
 const cancel = () => {
   showConfirm.value = false;
 };

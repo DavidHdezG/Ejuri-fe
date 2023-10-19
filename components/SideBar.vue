@@ -1,3 +1,4 @@
+<!-- SideBar component, uses SideMenutItem components for each nav menu -->
 <script setup>
 import { storeToRefs } from 'pinia';
 

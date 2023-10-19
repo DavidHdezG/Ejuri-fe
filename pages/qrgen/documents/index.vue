@@ -1,6 +1,5 @@
 <script setup>
 import MainLayout from "@/layouts/MainLayout.vue";
-import TableLayout from "@/layouts/TableLayout.vue";
 import Table from "@/components/Table.vue";
 const { $generalStore } = useNuxtApp()
 $generalStore.start();

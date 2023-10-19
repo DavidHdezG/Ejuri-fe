@@ -8,6 +8,9 @@ definePageMeta({
   middleware: ["auth"],
 });
 
+/**
+ * Change the user password
+ */
 const changePassword = () => {
   const email = $userStore.email;
 
@@ -20,6 +23,9 @@ const changePassword = () => {
   }
 }; 
 
+/**
+ * Toggle the password visibility
+ */
 const togglePass = () => {
   showPass.value = !showPass.value;
   var x = document.getElementById("password2");

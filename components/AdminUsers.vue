@@ -4,13 +4,17 @@ import { storeToRefs } from "pinia";
 const { confirmDelete, showConfirm } = storeToRefs($tablesStore);
 const { userList, editingUser, showOverlay, userIdToEdit } =
   storeToRefs($adminStore);
-const userToDelete = ref(null);
-const columns = ["ID", "Nombre", "Correo", "Rol", "Estatus", "Acciones"];
-const tempFullList = ref([]);
+const userToDelete = ref(null); // User ID to delete
+const columns = ["ID", "Nombre", "Correo", "Rol", "Estatus", "Acciones"]; // Table columns
+const tempFullList = ref([]); // Temporal list to search data
 onMounted(async () => {
+  // Get the full user list
   tempFullList.value = await $adminStore.getUserList();
 });
 
+/**
+ * Check if the user confirmed the delete action and delete the user and reload the list
+ */
 watch(
   () => confirmDelete.value,
   async () => {
@@ -22,18 +26,28 @@ watch(
   }
 );
 
+/**
+ * Set Show Overlay to true and set editingUser to false to show the dialog to add a new user
+ */
 const addUserButton = () => {
   editingUser.value = false;
   showOverlay.value = true;
 };
 
+/**
+ * Set Show Overlay to true and set editingUser to true to show the dialog to edit a user
+ * @param {number} id User ID to edit
+ */
 const editUserButton = (id) => {
   userIdToEdit.value = id;
-  console.log(editingUser.value);
   editingUser.value = true;
   showOverlay.value = true;
 };
 
+/**
+ * Search data in the full list
+ * @param {*} input 
+ */
 const searchData = (input) => {
   if (input === "") {
     setUserList();
@@ -51,10 +65,18 @@ const searchData = (input) => {
   setUserList(temp);
 };
 
+/**
+ * Set the user list to the full list or the filtered list
+ * @param {array} list List to set
+ */
 const setUserList = (list = tempFullList.value) => {
   userList.value = list;
 };
 
+/**
+ * Set the user ID to delete and show the confirm dialog
+ * @param {number} id User ID to delete
+ */
 const deleteUser = async (id) => {
   userToDelete.value = id;
   console.log(userToDelete.value);
@@ -67,7 +89,7 @@ const deleteUser = async (id) => {
     <AdminUsersDialog />
     <ConfirmAlert :string="userToDelete" type="usuario" />
 
-    <div class="flex align-center justify-between ">
+    <div class="flex align-center justify-between">
       <div class="flex align-center mt-4 space-x-4">
         <div class="relative flex items-center md:mt-0">
           <span class="absolute">
@@ -101,7 +123,6 @@ const deleteUser = async (id) => {
           >
             <Icon name="carbon:user-role" size="26" />
             <span>Roles</span>
-
           </button>
         </NuxtLink>
       </div>

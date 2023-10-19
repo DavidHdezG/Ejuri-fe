@@ -4,14 +4,9 @@ const { $userStore, $generalStore } = useNuxtApp();
 
 const user = ref("");
 const password = ref("");
-const test = async ()=> {
-  try {
-    const data = await $generalStore.getClientData();
-    console.log(data);
-  } catch (e) {
-    console.log(e);
-  }
-}
+/**
+ * Login the user and redirect to the home page if the login is successful
+ */
 const login = async () => {
   try {
     toast.promise(

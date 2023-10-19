@@ -4,7 +4,13 @@ const route = useRoute();
 const id = ref(route.params.id);
 const confirmed = ref(false);
 
+/**
+ * Confirm the account
+ */
 const { data } = await $userStore.confirmAccount(id.value);
+/**
+ * Check if the account was confirmed to show a different message
+ */
 onMounted(async () =>{
     try {
         if (data.status!=400) {

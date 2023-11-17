@@ -22,6 +22,8 @@ onMounted(async () => {
     "Buró",
     "Laboral",
     "Alianzas y Proveedores",
+    "Autoridades",
+    "Fondeo",
     "Todo",
   ];
   try {
@@ -265,7 +267,7 @@ watch(
           @click="filterData(filter)"
           :value="filter"
           v-for="filter in filters"
-          class="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 bg-gray-100 sm:text-sm active:bg-teal-500"
+          class="px-3 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 bg-gray-100 sm:text-sm active:bg-teal-500"
         >
           {{ filter }}
         </button>

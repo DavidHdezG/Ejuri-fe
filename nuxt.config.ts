@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
+    'nuxt-primevue',
   ],
   build: {
     transpile: ["vuetify"],
@@ -30,4 +31,10 @@ export default defineNuxtConfig({
       API_BASE_URL: process.env.API_BASE_URL
     },
   },
+  primevue: {
+    components: {
+        prefix: 'Prime',
+        include: ['Button', 'DataTable','Column']    /* Used as <PrimeButton /> and <PrimeDataTable /> */
+    }
+},
 });

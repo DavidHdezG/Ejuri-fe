@@ -1,6 +1,7 @@
 <script setup>
 import MainLayout from "@/layouts/MainLayout.vue";
 import readXlsFile from "read-excel-file";
+const { $annexStore } = useNuxtApp();
 import {
   VDataTable,
   VDataTableRow,
@@ -12,22 +13,23 @@ const items = ref([]);
 const headers = [
   {
     title: "Denominación o Razón Social",
-    key: '0',
+    key: "0",
   },
   {
     title: "Nombre(s)",
-    key: '1',
+    key: "1",
   },
   {
     title: "Apellido paterno",
-    key: '2',
-  },
-    {
-      title: "Apellido Materno",
-    key: '3',
+    key: "2",
   },
   {
-    title: "Nombre Completo (apellido paterno materno y nombre(s) sin abreviaturas) o Razón Social",
+    title: "Apellido Materno",
+    key: "3",
+  },
+  {
+    title:
+      "Nombre Completo (apellido paterno materno y nombre(s) sin abreviaturas) o Razón Social",
     key: "4",
   },
   {
@@ -41,12 +43,12 @@ const headers = [
   {
     title: "Fecha de Nacimiento (dd/mm/aaaa)",
     key: "7",
-    value: item => new Date(item[7]).toLocaleDateString(),
+    value: (item) => new Date(item[7]).toLocaleDateString(),
   },
   {
     title: "Fecha de Constitución (dd/mm/aaaa)",
     key: "8",
-    value: item => new Date(item[8]).toLocaleDateString(),
+    value: (item) => new Date(item[8]).toLocaleDateString(),
   },
   {
     title: "País de Nacimiento",
@@ -297,7 +299,8 @@ const headers = [
     key: "70",
   },
   {
-    title: "Especifique a detalle las razones por las que decidió celebrar contratos con una SOFOM ENR en México:",
+    title:
+      "Especifique a detalle las razones por las que decidió celebrar contratos con una SOFOM ENR en México:",
     key: "71",
   },
   {
@@ -305,11 +308,13 @@ const headers = [
     key: "72",
   },
   {
-    title: "Especifique el origen de los recursos que operará con esta SOFOM ENR:",
+    title:
+      "Especifique el origen de los recursos que operará con esta SOFOM ENR:",
     key: "73",
   },
   {
-    title: "Especifique el destino de los recursos que operará con esta SOFOM ENR:",
+    title:
+      "Especifique el destino de los recursos que operará con esta SOFOM ENR:",
     key: "74",
   },
   {
@@ -327,7 +332,7 @@ const headers = [
   {
     title: "Fecha",
     key: "78",
-    value: item => new Date(item[78]).toLocaleDateString(),
+    value: (item) => new Date(item[78]).toLocaleDateString(),
   },
 ];
 const uploadExcel = () => {
@@ -336,12 +341,28 @@ const uploadExcel = () => {
     items.value = rows.slice(1, rows.length - 1);
   });
 };
+
+const generateAnnex = async () => {
+  const file = document.getElementById("annex");
+  const formData = new FormData();
+  formData.append("file", file.files[0]);
+  const res = await $annexStore.generateAnnex(formData);
+  /* console.log(res); */
+  const blob = new Blob([res.data], { type: res.headers["content-type"] });
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = "nombre-del-archivo.xlsx"; // Puedes establecer el nombre y la extensión del archivo aquí
+
+  document.body.appendChild(link);
+  link.click();
+
+  document.body.removeChild(link);
+};
 </script>
 
 <template>
   <MainLayout page-title="Anexos PLD">
     <div class="flex flex-col items-center justify-center">
-
       <h2 class="py-6">Subir archivo Excel</h2>
       <!-- <input type="file" name="annex" id="annex" @change="uploadExcel()"> -->
       <v-file-input
@@ -360,7 +381,7 @@ const uploadExcel = () => {
       >
       </v-data-table>
 
-      <v-btn color="secondary" class="mt-4" @click="uploadExcel()">
+      <v-btn color="secondary" class="mt-4" @click="generateAnnex()">
         Subir
       </v-btn>
     </div>

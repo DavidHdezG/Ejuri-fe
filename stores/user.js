@@ -80,6 +80,32 @@ export const useUserStore = defineStore("user", {
       });
       return data;
     },
+
+    /**
+     * Change the password of the user with the token
+     * @param {*} token 
+     * @param {*} newPassword  
+     * @returns 
+     */
+    async changePasswordWithToken(token,newPassword) {
+      const data = await $axios.post(`/users/resetPassword/${token}`, {
+        newPassword:newPassword
+      });
+      return data;
+    },
+
+    /**
+     * Send an email to reset the password
+     * @param {*} email 
+     * @returns 
+     */
+    async sendEmailToResetPassword(email) {
+      const data = await $axios.post("/users/resetPassword", {
+        email: email,
+      });
+      return data;
+    },
+
     /**
      * Confirm the account of the user with the token
      * @param {*} token 

@@ -3,22 +3,33 @@
 const props = defineProps(["iconString"]);
 const { iconString } = toRefs(props);
 const icon = ref();
-if (iconString.value === "Digitalización")
+let dropdrownList = [];
+if (iconString.value === "Digitalización") {
   icon.value = "material-symbols:qr-code";
+  dropdrownList = [
+    {
+      to: "/qrgen/documents",
+      string: "Documentos",
+      icon: "material-symbols:lab-profile",
+    },
+    {
+      to: "/qrgen/historic",
+      string: "Histórico",
+      icon: "icon-park-outline:history-query",
+    },
+  ];
+}
+else if(iconString.value==="Anexos PLD"){
+  icon.value = "material-symbols:description";
+  dropdrownList = [
+    {
+      to: "/annex/historic",
+      string: "Histórico",
+      icon: "icon-park-outline:history-query",
+    },
+  ];
+}
 const showMenu = ref(false);
-
-const dropdrownList = [
-  {
-    to: "/qrgen/documents",
-    string: "Documentos",
-    icon: "material-symbols:lab-profile",
-  },
-  {
-    to: "/qrgen/historic",
-    string: "Histórico",
-    icon: "icon-park-outline:history-query",
-  },
-];
 </script>
 
 <template>

@@ -5,7 +5,7 @@ const { confirmDelete, showConfirm } = storeToRefs($tablesStore);
 const { userList, editingUser, showOverlay, userIdToEdit } =
   storeToRefs($adminStore);
 const userToDelete = ref(null); // User ID to delete
-const columns = ["ID", "Nombre", "Correo", "Rol", "Estatus", "Acciones"]; // Table columns
+const columns = ["ID", "Nombre", "Correo", "Rol", "Acciones"]; // Table columns
 const tempFullList = ref([]); // Temporal list to search data
 onMounted(async () => {
   // Get the full user list
@@ -159,10 +159,6 @@ const deleteUser = async (id) => {
                   </td>
                   <td class="px-4 py-4 text-sm whitespace-nowrap text-center">
                     {{ item.roles.name }}
-                  </td>
-                  <td class="px-4 py-4 text-sm whitespace-nowrap text-center">
-                    <span v-if="item.status == 'CONFIRMADO'">Confirmado</span>
-                    <span v-else>No confirmado</span>
                   </td>
                   <td class="px-4 py-4 text-sm whitespace-nowrap text-center">
                     <button

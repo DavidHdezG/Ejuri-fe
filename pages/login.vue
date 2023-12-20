@@ -28,7 +28,7 @@ const login = async () => {
 </script>
 
 <template>
-  <Toaster/>
+  <Toaster richColors/>
   <div class="h-screen h-screen flex items-center justify-center" v-on:keyup.enter="login()">
     <div
       clas
@@ -59,7 +59,9 @@ const login = async () => {
             class="border border-gray-300 text-center rounded-full focus:outline-none focus:border-[#A3DEE0] p-2 m-2"
           />
         </div>
+        <a href="/resetPassword" class="text-sm text-gray-500 hover:text-gray-700 transition duration-300">¿Olvidaste tu contraseña?</a>
         <div class="flex flex-col items-center justify-center">
+          
           <button
             @click="login()"
             class="bg-teal-500 text-gray-700 text-sm font-bold py-2 px-4 rounded-full hover:bg-[#3f51b5] hover:text-white transition duration-300"

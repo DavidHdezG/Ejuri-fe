@@ -25,6 +25,9 @@ const { role } = storeToRefs($userStore);
                 <NuxtLink to="/qrgen">
                     <SideMenuDropdown iconString='Digitalización' />
                 </NuxtLink>
+                <NuxtLink to="/annex">
+                    <SideMenuItem iconString='Anexos PLD' />
+                </NuxtLink>
             </div>
             
         </div>

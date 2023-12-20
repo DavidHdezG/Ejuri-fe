@@ -17,11 +17,14 @@ const { iconString } = toRefs(props);
 const icon = ref("");
 const dropdown = ref(false);
 if (iconString.value === "Inicio") icon.value = "material-symbols:home-rounded";
-if (iconString.value === "Digitalización") {
+else if (iconString.value === "Digitalización") {
   icon.value = "material-symbols:qr-code";
   dropdown.value = true;
 }
-if (iconString.value === "Administración") {
+else if (iconString.value === "Administración") {
   icon.value = "material-symbols:admin-panel-settings";
+}
+else if (iconString.value === "Anexos PLD") {
+  icon.value = "material-symbols:description";
 }
 </script>

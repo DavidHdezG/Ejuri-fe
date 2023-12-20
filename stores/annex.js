@@ -10,8 +10,13 @@ const $axios = axios().provide.axios;
 export const useAnnexStore = defineStore("annex", {
   state: () => ({
     id: "",
+    annexHistoricList: [],
   }),
   actions: {
+    async getAnnexList() {
+        const res = await $axios.get("/annex");
+        return res.data;
+    },
     async generateAnnex(formData) {
         const res= await $axios
         .post("/annex-generation/upload", formData, {
@@ -19,24 +24,27 @@ export const useAnnexStore = defineStore("annex", {
             "Content-Type": "multipart/form-data",
           },
         })
-        /* .then((res) => {
-          console.log(res.data);
-
-          const blob = new Blob([res.data], { type: res.headers['content-type']});
-          link.href = window.URL.createObjectURL(blob);
-          link.download = 'nombre-del-archivo.extension'; // Puedes establecer el nombre y la extensión del archivo aquí
-    
-          document.body.appendChild(link);
-          link.click();
-    
-          document.body.removeChild(link);
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        }); */
-        return res;
+        return res.data;
+    },
+    async getAnnexHistoric(id) {
+        const res = await $axios.get(`/pld/historic${id}`);
+        return res.data;
+    },
+    async getAnnexHistoricList(){
+        const res = await $axios.get("/pld/historic");
+        this.$state.annexHistoricList = res.data;
+        return res.data;
+    },
+    async removeHistoric(id){
+        const res = await $axios.delete(`/pld/historic/${id}`);
+        await this.getAnnexHistoricList();
+        return res.data;
+    },
+    async saveHistoric(data){
+        const res = await $axios.post("/pld/historic", data);
+        return res.data;
     }
   },
+
   persist: false,
 });

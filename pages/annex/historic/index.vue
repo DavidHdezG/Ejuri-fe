@@ -10,7 +10,7 @@ const { $annexStore, $userStore } = useNuxtApp();
 const { role } = storeToRefs($userStore);
 const { annexHistoricList } = storeToRefs($annexStore);
 const search = ref("");
-const menu = ref(false);
+const folderLink = ref('https://drive.google.com/drive/u/0/folders/13KDHL_BMLMOH3jQwlu1qCm-2x1E2w8Pr');
 const headers = [
   {
     title: "ID",
@@ -59,7 +59,10 @@ onMounted(async () => {
 <template>
   <MainLayout page-title="Histórico PLD">
     <div class="flex flex-col items-center align-center mt-4 mx-4">
-      <v-text-field
+        <div class="flex justify-start w-full">
+            <v-btn rounded color="secondary" class="mb-4" target="_blank" href="https://drive.google.com/drive/u/0/folders/13KDHL_BMLMOH3jQwlu1qCm-2x1E2w8Pr">Ir a carpeta</v-btn>
+        </div>
+        <v-text-field
         v-model="search"
         label="Buscar"
         prepend-inner-icon="mdi-magnify"

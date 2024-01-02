@@ -5,11 +5,11 @@ import { toast } from "vue-sonner";
 const route = useRoute();
 const { $generalStore, $tablesStore, $userStore } = useNuxtApp();
 const { role } = storeToRefs($userStore);
-const { edited, confirmDelete,showConfirm } = storeToRefs($tablesStore);
+const { edited, confirmDelete, showConfirm } = storeToRefs($tablesStore);
 let fragmentedData = []; // Fragmented data to paginate
 const infoDocumentToDelete = ref(null); // Document ID to delete
 let filters = []; // Filters to show
-const idToRemove=ref(null); // QrHistoric ID to delete
+const idToRemove = ref(null); // QrHistoric ID to delete
 let columns = []; // Table columns
 const data = ref([]); // Table data
 const totalPages = ref(1); // Total pages
@@ -46,6 +46,7 @@ onMounted(async () => {
         "Usuario",
         "Comentarios",
         "QR",
+        "Carpeta de cliente",
       ];
 
       await $tablesStore.getQrHistoricData();
@@ -180,7 +181,7 @@ const add = async () => {
 
 /**
  * Edit a document, set overlayEdit to true and creatingDocument to false to show the dialog to edit a document
- * @param {number} id 
+ * @param {number} id
  */
 const edit = async (id) => {
   await $tablesStore.getDocumentToEdit(id);
@@ -206,14 +207,14 @@ const remove = async (id) => {
  * Set the document ID to delete and show the confirm dialog
  * @param {number} id Document ID to delete
  */
-const deleteItemConfirm = async (id)=>{
-  infoDocumentToDelete.value= `ID: ${id}`;
-  idToRemove.value=id;
-  showConfirm.value=true;
-}
+const deleteItemConfirm = async (id) => {
+  infoDocumentToDelete.value = `ID: ${id}`;
+  idToRemove.value = id;
+  showConfirm.value = true;
+};
 
 /**
- * Set overlayQr to true to show the QR dialog of a historic 
+ * Set overlayQr to true to show the QR dialog of a historic
  * @param {number} id Document ID to view
  */
 const viewQR = async (id) => {
@@ -243,7 +244,6 @@ watch(
   () => edited.value,
   async () => {
     if (edited.value) {
-
       await $tablesStore.getDocumentList();
       resetData($tablesStore.documentList);
       edited.value = false;
@@ -257,7 +257,7 @@ watch(
     <Teleport to="body">
       <DialogTableItem />
       <DialogQRTable />
-      <ConfirmAlert :string="infoDocumentToDelete" type="documento con ID"/>
+      <ConfirmAlert :string="infoDocumentToDelete" type="documento con ID" />
     </Teleport>
     <div class="mt-6 md:flex md:items-center md:justify-between">
       <div
@@ -368,7 +368,9 @@ watch(
                 </tr>
                 <tr v-else v-for="item in data">
                   <TableDataRow :data="item.id" />
-                  <TableDataRow :data="item.client.name ? item.client.name:''" />
+                  <TableDataRow
+                    :data="item.client.name ? item.client.name : ''"
+                  />
                   <TableDataRow :data="item.folio" />
                   <TableDataRow :data="item.category.name" />
                   <TableDataRow :data="item.document.type" />
@@ -382,6 +384,22 @@ watch(
                     >
                       <Icon name="material-symbols:qr-code" class="w-6 h-6" />
                     </button>
+                  </td>
+                  <td class="px-4 py-4 text-sm whitespace-nowrap">
+                    <v-btn
+                      rounded
+                      color="secondary"
+                      :href="
+                        'https://drive.google.com/drive/folders/' +
+                        item.client.id
+                      "
+                      target="_blank"
+                    >
+                      <Icon
+                        name="material-symbols:folder-open"
+                        class="w-6 h-6 text-white"
+                      />
+                    </v-btn>
                   </td>
                 </tr>
               </tbody>

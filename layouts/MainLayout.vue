@@ -3,6 +3,7 @@
     <div class="flex">
         <Loading/>
         <SideBar/>
+        <!--  w-[calc(100%-240px)] -->
         <div class="flex flex-col w-[calc(100%-240px)]">
             <Header :page-title="pageTitle"/>
             <Toaster richColors/>

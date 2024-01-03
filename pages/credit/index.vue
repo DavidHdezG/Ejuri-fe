@@ -5,7 +5,8 @@ import MainLayout from "@/layouts/MainLayout.vue";
 import { mergeProps } from "vue";
 const dataDemo = ref([
   {
-    FECHA: "12\/21\/2023",
+    IDENTIFICADOR: "1",
+    FECHA: "12-21-2023",
     UNIDAD: "🌷",
     NOMBRE: "LUZ MARIA TORRES GARCIA",
     TRELLO:
@@ -34,6 +35,7 @@ const dataDemo = ref([
     PROMOTOR: "DDIAZ",
   },
   {
+    IDENTIFICADOR: "2",
     FECHA: "12\/21\/2023",
     UNIDAD: "🌷",
     NOMBRE: "ISIDRA OLIVAS CHAVIRA",
@@ -63,6 +65,7 @@ const dataDemo = ref([
     PROMOTOR: "DDIAZ",
   },
   {
+    IDENTIFICADOR: "3",
     FECHA: "12\/21\/2023",
     UNIDAD: "🌷",
     NOMBRE: "GABRIELA AGUILAR ARMENDARIZ",
@@ -111,7 +114,7 @@ const headers = [
   {
     title: "NOMBRE",
     key: "NOMBRE",
-    
+    align: "center",
   },
   {
     title: "TRELLO",
@@ -220,7 +223,16 @@ const headers = [
   },
 ];
 const search = ref("");
-const dialog = ref(false);
+const itemsCreditTrain = ref([
+  {
+    title: "Notas de Comité",
+    disabled: false,
+    href: "/credit",
+  },
+  { title: "Aprobaciones", disabled: false, href: "/credit/approves" },
+
+  { title: "Resumen", disabled: false, href: "/credit/summary" },
+]);
 const creditType = (item) => {
   const creditTypeToColor = {
     REFINANCIAMIENTO: "blue",
@@ -291,9 +303,18 @@ const resolutionType = (item) => {
 <template>
   <MainLayout page-title="Tren de Crédito">
     <div class="flex items-center align-center m-2">
-      <v-card flat title="Notas de Comité">
+      <v-card flat>
         <template v-slot:text>
           <v-container>
+            <v-row justify-center>
+              <v-col class=" flex ">
+                <v-breadcrumbs :items="itemsCreditTrain" class="mx-auto">
+                  <template v-slot:divider>
+                    <v-icon icon="mdi-chevron-right"></v-icon>
+                  </template>
+                </v-breadcrumbs>
+              </v-col>
+            </v-row>
             <v-row>
               <v-col cols="12" md="11">
                 <v-text-field
@@ -306,15 +327,16 @@ const resolutionType = (item) => {
                 ></v-text-field>
               </v-col>
               <v-col cols="12" md="1">
-                <v-btn icon small @click="dialog=true">
+                <DialogCredit :newCredit="true" />
+                <!-- <v-btn icon small @click="dialog=true">
                   <v-icon> mdi-plus </v-icon>
-                </v-btn>
+                </v-btn> -->
               </v-col>
             </v-row>
           </v-container>
         </template>
         <v-data-table
-        density="compact"
+          density="compact"
           page-text="{0}-{1} de {2}"
           items-per-page-text="Elementos por página"
           no-data-text="No se encontraron registros"
@@ -322,6 +344,18 @@ const resolutionType = (item) => {
           :headers="headers"
           :search="search"
         >
+          <template v-slot:item.NOMBRE="{ item }">
+            <!-- <v-btn
+              :href="item.columns.TRELLO"
+              target="_blank"
+              color="transparent"
+              icon
+              small
+            >
+              <v-icon> mdi-trello </v-icon>
+            </v-btn> -->
+            <DialogCredit :newCredit="false" :item="item.columns" />
+          </template>
           <template v-slot:item.TRELLO="{ item }">
             <v-btn
               :href="item.columns.TRELLO"
@@ -421,482 +455,5 @@ const resolutionType = (item) => {
         </v-data-table>
       </v-card>
     </div>
-
-    <template>
-      <v-row justify-center>
-        <v-dialog v-model="dialog" persistent width="1024">
-          <v-card>
-            <v-card-title class="mt-6">
-              <span class="text-h5"> Nuevo Crédito </span>
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field label="Identificador"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field type="date" label="Fecha"> </v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="2">
-                    <v-select
-                      chips
-                      label="Unidad"
-                      :items="['🅿️', '🌷', '🤡']"
-                    ></v-select>
-                  </v-col>
-                  <v-col md="8">
-                    <v-text-field label="Nombre"></v-text-field>
-                  </v-col>
-                  <v-col md="1">
-                    <v-dialog width="512">
-                      <template v-slot:activator="{ props: menu }">
-                        <v-tooltip location="top" text="Enlace a Trello">
-                          <template v-slot:activator="{ props: tooltip }">
-                            <v-btn
-                              v-bind="mergeProps(menu, tooltip)"
-                              icon
-                              small
-                            >
-                              <v-icon> mdi-trello </v-icon>
-                            </v-btn>
-                          </template>
-                          Enlace a Trello
-                        </v-tooltip>
-                      </template>
-                      <template v-slot:default="{ isActive }">
-                        <v-card>
-                          <v-card-text class="mt-4">
-                            <v-text-field
-                              label="Enlace a Trello"
-                            ></v-text-field>
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              @click="isActive.value = false"
-                              text
-                              color="error"
-                              >Cancelar</v-btn
-                            >
-                            <v-btn
-                              @click="isActive.value = false"
-                              text
-                              color="success"
-                              >Guardar</v-btn
-                            >
-                          </v-card-actions>
-                        </v-card>
-                      </template>
-                    </v-dialog>
-                  </v-col>
-                  <v-col md="1">
-                    <v-dialog width="512">
-                      <template v-slot:activator="{ props: menu }">
-                        <v-tooltip location="top" text="Enlace a Trello">
-                          <template v-slot:activator="{ props: tooltip }">
-                            <v-btn
-                              v-bind="mergeProps(menu, tooltip)"
-                              icon
-                              small
-                            >
-                              <v-icon> mdi-google-drive </v-icon>
-                            </v-btn>
-                          </template>
-                          Enlace a One Pager
-                        </v-tooltip>
-                      </template>
-                      <template v-slot:default="{ isActive }">
-                        <v-card>
-                          <v-card-text class="mt-4">
-                            <v-text-field
-                              label="Enlace a One Pager"
-                            ></v-text-field>
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              @click="isActive.value = false"
-                              text
-                              color="error"
-                              >Cancelar</v-btn
-                            >
-                            <v-btn
-                              @click="isActive.value = false"
-                              text
-                              color="success"
-                              >Guardar</v-btn
-                            >
-                          </v-card-actions>
-                        </v-card>
-                      </template>
-                    </v-dialog>
-                  </v-col>
-                  <v-col cols="12" md="4">
-                    <v-textarea label="Negocio"></v-textarea>
-                  </v-col>
-                  <v-col cols="12" md="4">
-                    <v-textarea label="Socios"></v-textarea>
-                  </v-col>
-                  <v-col cols="12" md="4">
-                    <v-textarea label="RL"></v-textarea>
-                  </v-col>
-                  <v-col cols="12" md="3">
-                    <v-select
-                      chips
-                      label="Tipo de Crédito"
-                      :items="[
-                        'REFINANCIAMIENTO',
-                        'NUEVO',
-                        'MODIFICATORIO',
-                        'REESTRUCTURA',
-                      ]"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="3">
-                    <v-select
-                      chips
-                      label="Tipo de Contrato"
-                      :items="['PRIVADO', 'RATIFICADO', 'ESCRITURA']"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="2">
-                    <v-select
-                      chips
-                      label="Moneda"
-                      :items="['MXN', 'MULTIMONEDA', 'USD']"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="3">
-                    <v-select
-                      chips
-                      label="Garantía"
-                      :items="[
-                        'HIPOTECARIA',
-                        'NA',
-                        'EXCEPCIÓN',
-                        'PRENDARIA',
-                        'BACK TO BACK',
-                        'HIP Y PREND',
-                        'FIDEICOMISO',
-                      ]"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="1">
-                    <v-dialog width="512">
-                      <template v-slot:activator="{ props: menu }">
-                        <v-tooltip location="top" text="Enlace a Trello">
-                          <template v-slot:activator="{ props: tooltip }">
-                            <v-btn
-                              v-bind="mergeProps(menu, tooltip)"
-                              icon
-                              small
-                            >
-                              <v-icon> mdi-shield-check-outline </v-icon>
-                            </v-btn>
-                          </template>
-                          Enlace de Anexo de Garantía
-                        </v-tooltip>
-                      </template>
-                      <template v-slot:default="{ isActive }">
-                        <v-card>
-                          <v-card-text class="mt-4">
-                            <v-text-field
-                              label="Enlace de Anexo de Garantía"
-                            ></v-text-field>
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              @click="isActive.value = false"
-                              text
-                              color="error"
-                              >Cancelar</v-btn
-                            >
-                            <v-btn
-                              @click="isActive.value = false"
-                              text
-                              color="success"
-                              >Guardar</v-btn
-                            >
-                          </v-card-actions>
-                        </v-card>
-                      </template>
-                    </v-dialog>
-                  </v-col>
-                  <v-col cols="12" md="2">
-                    <v-select
-                      chips
-                      label="Póliza"
-                      :items="['Si', 'NA', 'No']"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="2">
-                    <v-select
-                      chips
-                      label="Blusor"
-                      :items="['Si', 'NA', 'No']"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="3">
-                    <v-select
-                      chips
-                      label="Fondeo"
-                      :items="[
-                        'R. PROPIOS',
-                        'NO ESPECIFICADO',
-                        'NO FONDEABLE',
-                        'FIRA',
-                        'BANCOMEXT',
-                      ]"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="5">
-                    <v-textarea label="Notas"></v-textarea>
-                  </v-col>
-                  <!-- PROPUESTA EXPANSIVE PANEL -->
-                  <v-col cols="12" md="12">
-                    <v-expansion-panels variant="popout">
-                      <v-expansion-panel title="Propuesta">
-                        <v-expansion-panel-text>
-                          <!-- <v-card> -->
-                          <v-container>
-                            <v-row>
-                              <v-col cols="12" md="3">
-                                <v-text-field label="Producto"></v-text-field>
-                              </v-col>
-                              <v-col cols="12" md="3">
-                                <v-text-field label="Monto"></v-text-field>
-                              </v-col>
-                              <v-col cols="12" md="3">
-                                <v-text-field
-                                  label="Tasa ordinaria"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" md="3">
-                                <v-text-field label="Vigencia"></v-text-field>
-                              </v-col>
-                              <v-col cols="12" md="4">
-                                <v-textarea
-                                  label="Obligado solidario"
-                                ></v-textarea>
-                              </v-col>
-                              <v-col cols="12" md="4">
-                                <v-textarea label="Garantías"></v-textarea>
-                              </v-col>
-                              <v-col cols="12" md="4">
-                                <v-textarea label="Condicinantes"></v-textarea>
-                              </v-col>
-                            </v-row>
-                          </v-container>
-                          <!-- </v-card> -->
-                        </v-expansion-panel-text>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                  </v-col>
-                  <v-col md="3">
-                    <v-select
-                      chips
-                      :items="['SI', 'NO']"
-                      label="Sujeto a supervisión"
-                    >
-                    </v-select>
-                  </v-col>
-                  <v-col md="2">
-                    <v-select chips :items="['NA', 'NO']" label=" "> </v-select>
-                  </v-col>
-                  <v-col md="7">
-                    <v-select
-                      chips
-                      :items="['EN_ESPERA', 'APROBADO', 'RECHAZADO']"
-                      label="Resolución"
-                    >
-                    </v-select>
-                  </v-col>
-                  <!-- RESOLUCION COMITË EXPANSIVE PANEL -->
-                  <v-col cols="12" md="12">
-                    <v-expansion-panels variant="popout">
-                      <v-expansion-panel title="Resolución Comité">
-                        <v-expansion-panel-text>
-                          <!-- <v-card> -->
-                          <v-container>
-                            <v-row>
-                              <v-col cols="12" md="3">
-                                <v-text-field label="Producto"></v-text-field>
-                              </v-col>
-                              <v-col cols="12" md="3">
-                                <v-text-field label="Monto"></v-text-field>
-                              </v-col>
-                              <v-col cols="12" md="3">
-                                <v-text-field
-                                  label="Tasa ordinaria"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" md="3">
-                                <v-text-field label="Vigencia"></v-text-field>
-                              </v-col>
-                              <v-col cols="12" md="4">
-                                <v-textarea
-                                  label="Obligado solidario"
-                                ></v-textarea>
-                              </v-col>
-                              <v-col cols="12" md="4">
-                                <v-textarea label="Garantías"></v-textarea>
-                              </v-col>
-                              <v-col cols="12" md="4">
-                                <v-textarea label="Condicinantes"></v-textarea>
-                              </v-col>
-                              <v-col cols="12" md="12">
-                                <v-textarea label="Notas"></v-textarea>
-                              </v-col>
-                            </v-row>
-                          </v-container>
-                          <!-- </v-card> -->
-                        </v-expansion-panel-text>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                  </v-col>
-
-                  <v-col md="4">
-                    <v-select
-                      chips
-                      :items="[
-                        'DDIAZ',
-                        'MCENICEROS',
-                        'DARELLANO',
-                        'KMANRIQUE',
-                        'AVENEGAS',
-                        'OSALOMON',
-                        'RZARATE ',
-                        'LTERRAZAS',
-                      ]"
-                      label="Promotor"
-                    >
-                    </v-select>
-                  </v-col>
-                  <v-col md="1">
-                    <v-dialog width="512">
-                      <template v-slot:activator="{ props: menu }">
-                        <v-tooltip location="top" text="Enlace del audio">
-                          <template v-slot:activator="{ props: tooltip }">
-                            <v-btn
-                              v-bind="mergeProps(menu, tooltip)"
-                              icon
-                              small
-                            >
-                              <v-icon> mdi-microphone </v-icon>
-                            </v-btn>
-                          </template>
-                          Enlace del audio
-                        </v-tooltip>
-                      </template>
-                      <template v-slot:default="{ isActive }">
-                        <v-card>
-                          <v-card-text class="mt-4">
-                            <v-text-field
-                              label="Enlace del audio"
-                            ></v-text-field>
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              @click="isActive.value = false"
-                              text
-                              color="error"
-                              >Cancelar</v-btn
-                            >
-                            <v-btn
-                              @click="isActive.value = false"
-                              text
-                              color="success"
-                              >Guardar</v-btn
-                            >
-                          </v-card-actions>
-                        </v-card>
-                      </template>
-                    </v-dialog>
-                  </v-col>
-                  <v-col cols="12" md="7">
-                    <v-textarea label="Transcripción"></v-textarea>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions class="mb-4">
-              <v-spacer></v-spacer>
-              <v-dialog width="500">
-                <template v-slot:activator="{ props }">
-                  <v-btn text color="error" v-bind="props">Cancelar</v-btn>
-                </template>
-                <template v-slot:default="{ isActive }">
-                  <v-card min-width="300">
-                    <v-card-title class="text-h5"
-                      >Cancelar el crédito</v-card-title
-                    >
-                    <v-card-text>
-                      <p>
-                        ¿Estás seguro de que quieres cancelar el nuevo crédito?
-                      </p>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-
-                      <v-btn variant="text" @click="isActive.value = false">
-                        Regresar
-                      </v-btn>
-                      <v-btn
-                        color="error"
-                        variant="text"
-                        @click="
-                          dialog = false;
-                          isActive = false;
-                        "
-                      >
-                        Cancelar
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </template>
-              </v-dialog>
-
-              <v-dialog width="500">
-                <template v-slot:activator="{ props }">
-                  <v-btn text color="success" v-bind="props">Guardar</v-btn>
-                </template>
-                <template v-slot:default="{ isActive }">
-                  <v-card min-width="300">
-                    <v-card-title class="text-h5"
-                      >Guardar el crédito</v-card-title
-                    >
-                    <v-card-text>
-                      <p>
-                        ¿Estás seguro de que quieres guardar el nuevo crédito?
-                      </p>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-
-                      <v-btn variant="text" @click="isActive.value = false">
-                        Regresar
-                      </v-btn>
-                      <v-btn
-                        color="success"
-                        variant="text"
-                        @click="
-                          dialog = false;
-                          isActive = false;
-                        "
-                      >
-                        Guardar
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </template>
-              </v-dialog>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </template>
   </MainLayout>
 </template>

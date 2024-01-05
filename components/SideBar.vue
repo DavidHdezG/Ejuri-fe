@@ -29,6 +29,9 @@ const isActive = ref(false);
                 <NuxtLink to="/annex">
                     <SideMenuItem iconString='Anexos PLD' />
                 </NuxtLink>
+                <NuxtLink to="/credit">
+                    <SideMenuItem iconString='Tren de Crédito' />
+                </NuxtLink>
             </div>
             
         </div>

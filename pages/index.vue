@@ -44,6 +44,11 @@ if($userStore.role === 'Administrador'){
       icon: "mdi-file-document",
       route: "/annex",
     },
+    {
+      title: "Tren de Crédito",
+      icon: "mdi-cash",
+      route: "/credit",
+    },
   ]
 } else {
   menuList.value = [
@@ -56,6 +61,11 @@ if($userStore.role === 'Administrador'){
       title: "Anexos PLD",
       icon: "mdi-file-document",
       route: "/annex",
+    },
+    {
+      title: "Tren de Crédito",
+      icon: "mdi-cash",
+      route: "/credit",
     },
   ]
 }

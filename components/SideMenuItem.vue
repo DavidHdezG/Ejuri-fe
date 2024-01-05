@@ -27,4 +27,7 @@ else if (iconString.value === "Administración") {
 else if (iconString.value === "Anexos PLD") {
   icon.value = "material-symbols:description";
 }
+else if (iconString.value === "Tren de Crédito") {
+  icon.value = "material-symbols:attach-money";
+}
 </script>

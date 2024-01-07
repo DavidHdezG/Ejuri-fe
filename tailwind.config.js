@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     "./components/**/*.{js,vue,ts}",
     "./layouts/**/*.vue",
@@ -7,10 +8,11 @@ module.exports = {
     "./plugins/**/*.{js,ts}",
     "./nuxt.config.{js,ts}",
     "./app.vue",
+    "./presets/**/*.{js,ts,vue}"
   ],
   theme: {
     extend: {
-      /* colors: {
+      colors: {
         "primary-50": "rgb(var(--primary-50))",
         "primary-100": "rgb(var(--primary-100))",
         "primary-200": "rgb(var(--primary-200))",
@@ -34,7 +36,7 @@ module.exports = {
         "surface-800": "rgb(var(--surface-800))",
         "surface-900": "rgb(var(--surface-900))",
         "surface-950": "rgb(var(--surface-950))",
-      }, */
+      },
     },
   },
   plugins: [],

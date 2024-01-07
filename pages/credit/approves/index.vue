@@ -1,7 +1,7 @@
 <script setup>
 import MainLayout from "@/layouts/MainLayout.vue";
 import { VDataTable } from "vuetify/lib/labs/components.mjs";
-
+import InputText from 'primevue/inputtext';
 const demoData = ref([
   {
     TIPO_DE_CLIENTE: "NUEVO",
@@ -537,7 +537,8 @@ const search = ref("");
                 <!-- <v-btn icon @click="dialog = true">
                   <v-icon>mdi-plus</v-icon>
                 </v-btn> -->
-                <Button>Button</Button>
+                <!-- <Button label="prime"></Button> -->
+                <InputText type="text"/>
               </v-col>
             </v-row>
           </v-container>

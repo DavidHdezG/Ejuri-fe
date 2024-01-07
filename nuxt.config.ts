@@ -33,6 +33,7 @@ export default defineNuxtConfig({
   },
   primevue: {
     unstyled: true,
-    importPT: {from:path.resolve(__dirname,'./presets/Lara/')}
+    importPT: {from:path.resolve(__dirname,'./presets/Lara/')},
+    ripple: true,
   },
 });

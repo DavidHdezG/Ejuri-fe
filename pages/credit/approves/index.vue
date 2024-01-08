@@ -1,7 +1,6 @@
 <script setup>
 import MainLayout from "@/layouts/MainLayout.vue";
 import { VDataTable } from "vuetify/lib/labs/components.mjs";
-import InputText from 'primevue/inputtext';
 const demoData = ref([
   {
     TIPO_DE_CLIENTE: "NUEVO",
@@ -269,10 +268,8 @@ const demoData = ref([
     CHECK_LIST: false,
   },
 ]);
-const headers = [
-  
+const headers = ref([
   [
-    
     {
       title: "RFC (Expe)",
       key: "RFC_(Expe)",
@@ -286,214 +283,266 @@ const headers = [
       title: "PRODUCTO",
       key: "PRODUCTO",
       value: "PRODUCTO",
+      class: "text-orange-400",
     },
     {
       title: "NOTA",
       key: "NOTA",
+      class: "text-orange-400",
     },
     {
       title: "MXN",
       key: "MXN",
+      class: "text-orange-400",
     },
     {
       title: "USD",
       key: "USD",
+      class: "text-orange-400",
     },
     {
       title: "GARANTIA",
       key: "GARANTIA",
+      class: "text-orange-400",
     },
     {
       title: "FECHA DE APROBACIÓN",
       key: "FECHA_DE_APROBACION",
+      class: "text-orange-400",
     },
     {
       title: "MES",
       key: "MES",
+      class: "text-orange-400",
     },
     {
       title: "AÑO",
       key: "AÑO",
+      class: "text-orange-400",
     },
     {
       title: "ACTA",
       key: "ACTA",
+      class: "text-orange-400",
     },
     {
       title: "TRELLO",
       key: "TRELLO",
+      class: "text-orange-400",
     },
 
     {
       title: "SOLICITUD",
       key: "SOLICITUD",
+      class: "text-orange-400",
     },
     {
       title: "ESTATUS",
       key: "ESTATUS",
+      class: "text-green-400",
     },
     {
       title: "PROMOTOR",
+      class: "text-green-400",
       key: "PROMOTOR",
     },
     {
       title: "ESTATUS EDU",
+      class: "text-green-400",
       key: "ESTATUS_EDU",
     },
     {
       title: "FECHA ESTATUS",
+      class: "text-green-400",
       key: "FECHA_ESTATUS",
     },
     {
       title: "OBSERVACIONES",
+      class: "text-green-400",
       key: "OBSERVACIONES",
     },
     {
+      class: "text-green-400",
       title: "FECHA CAMPOS",
       key: "FECHA_CAMPOS",
     },
     {
       title: "DIAS PARA PRIMERA REVISION",
+      class: "text-green-400",
       key: "DIAS_PARA_PRIMERA_REVISION",
     },
     {
       title: "FECHA PRIMERA REVISION",
+      class: "text-green-400",
       key: "FECHA_PRIMERA_REVISION",
     },
     {
       title: "FECHA ULTIMA REVISION",
       key: "FECHA_ULTIMA_REVISION",
+      class: "text-green-400",
     },
     {
       title: "FECHA CIERRE EDU",
       key: "FECHA_CIERRE_EDU",
+      class: "text-green-400",
     },
     {
       title: "DIAS EDU",
+      class: "text-green-400",
       key: "DIAS_EDU",
     },
     {
       title: "OS PERSONA MORAL",
+      class: "text-green-400",
       key: "OS_PERSONA_MORAL",
     },
     {
       title: "OS MORAL",
+      class: "text-green-400",
       key: "OS_MORAL",
     },
     {
       title: "QUEDO OS PM",
+      class: "text-green-400",
       key: "QUEDO_OS_PM",
     },
     {
       title: "FECHA DE ELABORACIÓN DE CONTRATO",
       key: "FECHA_DE_ELABORACIÓN_DE_CONTRATO",
+      class: "text-pink-500",
     },
     {
       title: "DIAS ELABORACIÓN CONTRATO",
       key: "DIAS_ELABORACIÓN_CONTRATO",
+      class: "text-pink-500",
     },
     {
       title: "FECHA REVISIÓN CONTRATO",
       key: "FECHA_REVISIÓN_CONTRATO",
+      class: "text-pink-500",
     },
     {
       title: "DIAS VOBO",
       key: "DIAS_VOBO",
+      class: "text-pink-500",
     },
     {
       title: "FECHA DE FIRMA",
       key: "FECHA_DE_FIRMA",
+      class: "text-pink-500",
     },
     {
       title: "DÍAS CONTRATO FIRMA",
       key: "DIAS_CONTRATO_FIRMA",
+      class: "text-pink-500",
     },
     {
       title: "DÍAS TRANSCURRIDOS AUT FIRMA",
       key: "DIAS_TRANSCURRIDOS_AUT_FIRMA",
+      class: "text-pink-500",
     },
     {
       title: "ELABORA CONTRATO",
       key: "ELABORA_CONTRATO",
+      class: "text-pink-500",
     },
     {
       title: "FOLIO",
       key: "FOLIO",
+      class: "text-purple-700",
     },
     {
       title: "DRIVE",
       key: "DRIVE",
+      class: "text-purple-700",
     },
     {
       title: "FORMA DE INSTRUMENTACION",
       key: "FORMA_DE_INSTRUMENTACION",
+      class: "text-purple-700",
     },
     {
       title: "FIRMADO EN:",
       key: "FIRMADO_EN:",
+      class: "text-purple-700",
     },
     {
       title: "EVIDENCIA DE FIRMA",
       key: "EVIDENCIA_DE_FIRMA",
+      class: "text-purple-700",
     },
     {
       title: "RUG",
       key: "RUG",
+      class: "text-blue-700",
     },
     {
       title: "3WM",
       key: "3WM",
+      class: "text-blue-700",
     },
     {
       title: "FORMATO MESA DE CONTROL",
       key: "FORMATO_MESA_DE_CONTROL",
+      class: "text-blue-700",
     },
     {
       title: "CONTRATO RECIBIDO Y REGISTRADO",
       key: "CONTRATO_RECIBIDO_Y_REGISTRADO",
+      class: "text-blue-700",
     },
     {
       title: "EXPEDIENTE COMPLETO",
       key: "EXPEDIENTE_COMPLETO",
+      class: "text-pink-300",
     },
     {
       title: "FECHA COMPLETO",
       key: "FECHA_COMPLETO",
+      class: "text-pink-300",
     },
     {
       title: "DIAS TRANSCURRIDOS AUT EXP COMPLETO",
       key: "DIAS_TRANSCURRIDOS_AUT_EXP_COMPLETO",
+      class: "text-pink-300",
     },
     {
       title: "CONTRATO DIGITALIZADO",
       key: "CONTRATO_DIGITALIZADO",
+      class: "text-pink-300",
     },
     {
       title: "PAGARÉ DIGITALIZADO",
       key: "PAGARE_DIGITALIZADO",
+      class: "text-pink-300",
     },
     {
       title: "BOVEDA",
       key: "BOVEDA",
+      class: "text-pink-300",
     },
     {
       title: "MAPEO",
       key: "MAPEO",
+      class: "text-pink-300",
     },
     {
       title: "COMENTARIO MAPEO",
       key: "COMENTARIO_MAPEO",
+      class: "text-pink-300",
     },
     {
       title: "CHECK LIST",
       key: "CHECK_LIST",
+      class: "text-pink-300",
     },
     {
       title: "Drive Check List",
       key: "Drive_Check_List",
+      class: "text-pink-300",
     },
   ],
-];
+]);
 const itemsCreditTrain = ref([
   {
     title: "Notas de Comité",
@@ -505,6 +554,7 @@ const itemsCreditTrain = ref([
   { title: "Resumen", disabled: false, href: "/credit/summary" },
 ]);
 const search = ref("");
+
 </script>
 
 <template>
@@ -533,13 +583,6 @@ const search = ref("");
                   hide-details
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" md="1">
-                <!-- <v-btn icon @click="dialog = true">
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn> -->
-                <!-- <Button label="prime"></Button> -->
-                <InputText type="text"/>
-              </v-col>
             </v-row>
           </v-container>
         </template>
@@ -552,6 +595,31 @@ const search = ref("");
           items-per-page-text="Elementos por página"
           no-data-text="No se encontraron registros"
         >
+          <template
+            v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }"
+          >
+            <tr>
+              <template
+                v-for="column in columns"
+                :key="column.key"
+                class="bg-red-200"
+              >
+                <td>
+                  <div class="">
+                    <span
+                      :class="'font-bold cursor-pointer '+column.class"
+                      @click="() => toggleSort(column)"
+                    >
+                      {{ column.title }}
+                    </span>
+                    <template v-if="isSorted(column)">
+                      <v-icon :icon="getSortIcon(column)"></v-icon>
+                    </template>
+                  </div>
+                </td>
+              </template>
+            </tr>
+          </template>
         </v-data-table>
       </v-card>
     </div>

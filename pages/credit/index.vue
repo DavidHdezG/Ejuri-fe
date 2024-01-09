@@ -308,11 +308,12 @@ const resolutionType = (item) => {
           <v-container>
             <v-row justify-center>
               <v-col class=" flex ">
-                <v-breadcrumbs :items="itemsCreditTrain" class="mx-auto">
+                <!-- <v-breadcrumbs :items="itemsCreditTrain" class="mx-auto">
                   <template v-slot:divider>
                     <v-icon icon="mdi-chevron-right"></v-icon>
                   </template>
-                </v-breadcrumbs>
+                </v-breadcrumbs> -->
+                <CreditBreadcrumbs />
               </v-col>
             </v-row>
             <v-row>

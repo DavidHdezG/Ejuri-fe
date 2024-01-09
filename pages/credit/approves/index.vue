@@ -4,8 +4,8 @@ import { VDataTable } from "vuetify/lib/labs/components.mjs";
 const demoData = ref([
   {
     TIPO_DE_CLIENTE: "NUEVO",
-    "RFC_(Expe)": "BNO130308HI1",
-    "CLIENTE_(One_Pager)": "BANDAS DEL NOROESTE, SA DE CV",
+    RFC_Expe: "BNO130308HI1",
+    CLIENTE_One_Pager: "BANDAS DEL NOROESTE, SA DE CV",
     PRODUCTO: "BI",
     NOTA: "NUEVO",
     MXN: 0,
@@ -43,10 +43,10 @@ const demoData = ref([
     DRIVE:
       "https:\/\/drive.google.com\/drive\/folders\/1miCw32YX4YJIOpsvmDWTGGv-T8DtxfsK?usp=drive_link",
     FORMA_DE_INSTRUMENTACION: "PRIVADO",
-    "FIRMADO_EN:": "DOCUSIGN",
+    FIRMADO_EN: "DOCUSIGN",
     EVIDENCIA_DE_FIRMA: true,
     RUG: "NA",
-    "3WM": true,
+    threeWM: true,
     FORMATO_MESA_DE_CONTROL: "NA",
     CONTRATO_RECIBIDO_Y_REGISTRADO: true,
     EXPEDIENTE_COMPLETO: true,
@@ -65,8 +65,8 @@ const demoData = ref([
   },
   {
     TIPO_DE_CLIENTE: "EXISTENTE",
-    "RFC_(Expe)": "COUE740630CV5",
-    "CLIENTE_(One_Pager)": "EDWIN COSSÍO UGARTE ",
+    RFC_Expe: "COUE740630CV5",
+    CLIENTE_One_Pager: "EDWIN COSSÍO UGARTE ",
     PRODUCTO: "BI",
     NOTA: "RENOVACIÓN",
     MXN: 4000000,
@@ -104,10 +104,10 @@ const demoData = ref([
     DRIVE:
       "https:\/\/drive.google.com\/drive\/folders\/1gVLXXw_BcshQzikDw97EVwJXnKbmyryP?usp=drive_link",
     FORMA_DE_INSTRUMENTACION: "PRIVADO",
-    "FIRMADO_EN:": "FISICO",
+    FIRMADO_EN: "FISICO",
     EVIDENCIA_DE_FIRMA: true,
     RUG: "NA",
-    "3WM": true,
+    threeWM: true,
     FORMATO_MESA_DE_CONTROL: "NA",
     CONTRATO_RECIBIDO_Y_REGISTRADO: true,
     EXPEDIENTE_COMPLETO: true,
@@ -126,7 +126,7 @@ const demoData = ref([
   },
   {
     TIPO_DE_CLIENTE: "NUEVO",
-    "CLIENTE_(One_Pager)": "FARM ROCK S DE RL DE CV",
+    CLIENTE_One_Pager: "FARM ROCK S DE RL DE CV",
     PRODUCTO: "BI",
     NOTA: "NUEVO",
     MXN: 500000,
@@ -150,10 +150,10 @@ const demoData = ref([
     DIAS_TRANSCURRIDOS_AUT_FIRMA: "N\/A",
     ELABORA_CONTRATO: "N\/A",
     FORMA_DE_INSTRUMENTACION: "NA",
-    "FIRMADO_EN:": "NA",
+    FIRMADO_EN: "NA",
     EVIDENCIA_DE_FIRMA: "N\/A",
     RUG: "N\/A",
-    "3WM": "N\/A",
+    threeWM: "N\/A",
     FORMATO_MESA_DE_CONTROL: "N\/A",
     CONTRATO_RECIBIDO_Y_REGISTRADO: "N\/A",
     EXPEDIENTE_COMPLETO: false,
@@ -164,8 +164,8 @@ const demoData = ref([
   },
   {
     TIPO_DE_CLIENTE: "EXISTENTE",
-    "RFC_(Expe)": "BIN180911GFA",
-    "CLIENTE_(One_Pager)": "BYC INDUSTRIAS SA DE CV",
+    RFC_Expe: "BIN180911GFA",
+    CLIENTE_One_Pager: "BYC INDUSTRIAS SA DE CV",
     PRODUCTO: "BI",
     NOTA: "MODIFICATORIO",
     MXN: 900000,
@@ -203,10 +203,10 @@ const demoData = ref([
     DRIVE:
       "https:\/\/drive.google.com\/drive\/folders\/1I_fTq06queLwbIVTfFfMxYxkm9eI6t8M?usp=drive_link",
     FORMA_DE_INSTRUMENTACION: "PRIVADO",
-    "FIRMADO_EN:": "FISICO",
+    FIRMADO_EN: "FISICO",
     EVIDENCIA_DE_FIRMA: true,
     RUG: true,
-    "3WM": true,
+    threeWM: true,
     FORMATO_MESA_DE_CONTROL: "NA",
     CONTRATO_RECIBIDO_Y_REGISTRADO: true,
     EXPEDIENTE_COMPLETO: true,
@@ -225,8 +225,8 @@ const demoData = ref([
   },
   {
     TIPO_DE_CLIENTE: "NUEVO",
-    "RFC_(Expe)": "TIN201015KPA",
-    "CLIENTE_(One_Pager)": "TRIFECTO INGENIERÍA, SAPI DE CV",
+    RFC_Expe: "TIN201015KPA",
+    CLIENTE_One_Pager: "TRIFECTO INGENIERÍA, SAPI DE CV",
     PRODUCTO: "BI",
     NOTA: "NUEVO",
     MXN: 500000,
@@ -258,7 +258,7 @@ const demoData = ref([
     FIRMADO_EN: "NA",
     EVIDENCIA_DE_FIRMA: true,
     RUG: "NA",
-    "3WM": true,
+    threeWM: true,
     FORMATO_MESA_DE_CONTROL: "NA",
     CONTRATO_RECIBIDO_Y_REGISTRADO: true,
     EXPEDIENTE_COMPLETO: false,
@@ -271,12 +271,16 @@ const demoData = ref([
 const headers = ref([
   [
     {
+      title: "TIPO DE CLIENTE",
+      key: "TIPO_DE_CLIENTE",
+    },
+    {
       title: "RFC (Expe)",
-      key: "RFC_(Expe)",
+      key: "RFC_Expe",
     },
     {
       title: "CLIENTE (One Pager)",
-      key: "CLIENTE_(One_Pager)",
+      key: "CLIENTE_One_Pager",
     },
 
     {
@@ -463,7 +467,7 @@ const headers = ref([
     },
     {
       title: "FIRMADO EN:",
-      key: "FIRMADO_EN:",
+      key: "FIRMADO_EN",
       class: "text-purple-700",
     },
     {
@@ -478,7 +482,7 @@ const headers = ref([
     },
     {
       title: "3WM",
-      key: "3WM",
+      key: "threeWM",
       class: "text-blue-700",
     },
     {
@@ -554,7 +558,26 @@ const itemsCreditTrain = ref([
   { title: "Resumen", disabled: false, href: "/credit/summary" },
 ]);
 const search = ref("");
-
+const formatCash = (value) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  }).format(value);
+};
+const statusType = (item) => {
+  const statusTypeToColor = {
+    SIGNED: "gray",
+    REJECTED: "red",
+    DECLINED: "gray",
+    "ANNUAL REVIEW": "white",
+    "CONTRACT READY": "blue",
+    "EDU IN PROCESS": "yellow",
+    "WITHOUT EDU": "pink",
+  };
+  return statusTypeToColor[item] || "";
+};
 </script>
 
 <template>
@@ -565,11 +588,12 @@ const search = ref("");
           <v-container>
             <v-row>
               <v-col class="flex">
-                <v-breadcrumbs :items="itemsCreditTrain" class="mx-auto">
+                <!-- <v-breadcrumbs :items="itemsCreditTrain" class="mx-auto">
                   <template v-slot:divider>
                     <v-icon icon="mdi-chevron-right"></v-icon>
                   </template>
-                </v-breadcrumbs>
+                </v-breadcrumbs> -->
+                <CreditBreadcrumbs />
               </v-col>
             </v-row>
             <v-row>
@@ -583,12 +607,54 @@ const search = ref("");
                   hide-details
                 ></v-text-field>
               </v-col>
+              <v-col cols="12" md="1">
+                <v-tooltip>
+                  <template v-slot:activator="{ props }">
+                    <v-btn icon v-bind="props">
+                      <v-icon>mdi-help</v-icon>
+                      <v-overlay
+                        activator="parent"
+                        location-strategy="connected"
+                        scroll-strategy="reposition"
+                      >
+                        <v-card class="pa-2"> 
+                          <!-- <v-card-title class="text-h5">
+                            <span class="font-weight-bold">Ayuda</span>
+                          </v-card-title> -->
+                          <v-card-text>
+                            <p>
+                              <span class="text-orange-400 font-bold">Aprobación</span> 
+                              </p>
+                            <p>
+                              <span class="text-green-400 font-bold">Mesa de Control 1</span> 
+                              </p>
+                            <p>
+                              <span class="text-pink-500 font-bold">Instrumentación</span> 
+                            </p>
+                            <p>
+                              <span class="text-purple-700 font-bold">Formalización</span> 
+                            </p>
+                            <p>
+                              <span class="text-blue-700 font-bold">Mesa de Control 2</span> 
+                            </p>
+                            <p>
+                              <span class="text-pink-300 font-bold">Guardavalores</span> 
+                            </p>
+                            
+                          </v-card-text>
+                        </v-card>
+                      </v-overlay>
+                    </v-btn>
+                  </template>
+                  ¿Qué significan los colores en las columnas?
+                </v-tooltip>
+              </v-col>
             </v-row>
           </v-container>
         </template>
         <v-data-table
           :items="demoData"
-          item-key="CLIENTE_(One_Pager)"
+          item-key="CLIENTE_One_Pager"
           :headers="headers"
           :search="search"
           page-text="{0}-{1} de {2}"
@@ -598,16 +664,29 @@ const search = ref("");
           <template
             v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }"
           >
-            <tr>
+            <tr class="relative left-0">
               <template
                 v-for="column in columns"
                 :key="column.key"
                 class="bg-red-200"
               >
-                <td>
+                <td v-if="column.key == 'CLIENTE_One_Pager'" class="fixed">
                   <div class="">
                     <span
-                      :class="'font-bold cursor-pointer '+column.class"
+                      :class="'font-bold sticky cursor-pointer ' + column.class"
+                      @click="() => toggleSort(column)"
+                    >
+                      {{ column.title }}
+                    </span>
+                    <template v-if="isSorted(column)">
+                      <v-icon :icon="getSortIcon(column)"></v-icon>
+                    </template>
+                  </div>
+                </td>
+                <td v-else>
+                  <div class="">
+                    <span
+                      :class="'font-bold cursor-pointer ' + column.class"
                       @click="() => toggleSort(column)"
                     >
                       {{ column.title }}
@@ -620,8 +699,200 @@ const search = ref("");
               </template>
             </tr>
           </template>
+
+          <template v-slot:item="{ item }">
+            <tr>
+              <td>
+                {{ item.columns.TIPO_DE_CLIENTE }}
+              </td>
+              <td>
+                {{ item.columns.RFC_Expe }}
+              </td>
+              <td class="fixed">
+                {{ item.columns.CLIENTE_One_Pager }}
+              </td>
+              <td>
+                {{ item.columns.PRODUCTO }}
+              </td>
+              <td>
+                {{ item.columns.NOTA }}
+              </td>
+              <td>
+                {{ formatCash(item.columns.MXN) }}
+              </td>
+              <td>
+                {{ formatCash(item.columns.USD) }}
+              </td>
+              <td>
+                {{ item.columns.GARANTIA }}
+              </td>
+              <td>
+                {{ item.columns.FECHA_DE_APROBACION }}
+              </td>
+              <td>
+                {{ item.columns.MES }}
+              </td>
+              <td>
+                {{ item.columns.AÑO }}
+              </td>
+              <td>
+                {{ item.columns.ACTA }}
+              </td>
+              <td>
+                {{ item.columns.TRELLO }}
+              </td>
+              <td>
+                {{ item.columns.SOLICITUD }}
+              </td>
+              <td>
+                <v-chip
+                  :color="statusType(item.columns.ESTATUS)"
+                  :text="item.columns.ESTATUS"
+                  :variant="
+                    item.columns.ESTATUS === 'SIGNED' ? 'outlined' : 'solid'
+                  "
+                >
+                </v-chip>
+              </td>
+              <td>
+                {{ item.columns.PROMOTOR }}
+              </td>
+              <td>
+                {{ item.columns.ESTATUS_EDU }}
+              </td>
+              <td>
+                {{ item.columns.FECHA_ESTATUS }}
+              </td>
+              <td>
+                {{ item.columns.OBSERVACIONES }}
+              </td>
+              <td>
+                {{ item.columns.FECHA_CAMPOS }}
+              </td>
+              <td>
+                {{ item.columns.DIAS_PARA_PRIMERA_REVISION }}
+              </td>
+
+              <td>
+                {{ item.columns.FECHA_PRIMERA_REVISION }}
+              </td>
+              <td>
+                {{ item.columns.FECHA_ULTIMA_REVISION }}
+              </td>
+              <td>
+                {{ item.columns.FECHA_CIERRE_EDU }}
+              </td>
+              <td>
+                {{ item.columns.DIAS_EDU }}
+              </td>
+              <td>
+                {{ item.columns.OS_PERSONA_MORAL }}
+              </td>
+              <td>
+                {{ item.columns.OS_MORAL }}
+              </td>
+              <td>
+                {{ item.columns.QUEDO_OS_PM }}
+              </td>
+              <td>
+                {{ item.columns.FECHA_DE_ELABORACIÓN_DE_CONTRATO }}
+              </td>
+              <td>
+                {{ item.columns.DIAS_ELABORACIÓN_CONTRATO }}
+              </td>
+              <td>
+                {{ item.columns.FECHA_REVISIÓN_CONTRATO }}
+              </td>
+              <td>
+                {{ item.columns.DIAS_VOBO }}
+              </td>
+              <td>
+                {{ item.columns.FECHA_DE_FIRMA }}
+              </td>
+              <td>
+                {{ item.columns.DIAS_CONTRATO_FIRMA }}
+              </td>
+              <td>
+                {{ item.columns.DIAS_TRANSCURRIDOS_AUT_FIRMA }}
+              </td>
+              <td>
+                {{ item.columns.ELABORA_CONTRATO }}
+              </td>
+              <td>
+                {{ item.columns.FOLIO }}
+              </td>
+              <td>
+                {{ item.columns.DRIVE }}
+              </td>
+              <td>
+                {{ item.columns.FORMA_DE_INSTRUMENTACION }}
+              </td>
+              <td>
+                {{ item.columns.FIRMADO_EN }}
+              </td>
+              <td>
+                {{ item.columns.EVIDENCIA_DE_FIRMA }}
+              </td>
+              <td>
+                {{ item.columns.RUG }}
+              </td>
+              <td>
+                {{ item.columns.threeWM }}
+              </td>
+              <td>
+                {{ item.columns.FORMATO_MESA_DE_CONTROL }}
+              </td>
+              <td>
+                {{ item.columns.CONTRATO_RECIBIDO_Y_REGISTRADO }}
+              </td>
+              <td>
+                {{ item.columns.EXPEDIENTE_COMPLETO }}
+              </td>
+              <td>
+                {{ item.columns.FECHA_COMPLETO }}
+              </td>
+              <td>
+                {{ item.columns.DIAS_TRANSCURRIDOS_AUT_EXP_COMPLETO }}
+              </td>
+              <td>
+                {{ item.columns.CONTRATO_DIGITALIZADO }}
+              </td>
+              <td>
+                {{ item.columns.PAGARE_DIGITALIZADO }}
+              </td>
+              <td>
+                {{ item.columns.BOVEDA }}
+              </td>
+              <td>
+                {{ item.columns.MAPEO }}
+              </td>
+              <td>
+                {{ item.columns.COMENTARIO_MAPEO }}
+              </td>
+              <td>
+                {{ item.columns.CHECK_LIST }}
+              </td>
+              <td>
+                {{ item.columns.Drive_Check_List }}
+              </td>
+            </tr>
+          </template>
         </v-data-table>
       </v-card>
     </div>
   </MainLayout>
 </template>
+
+<style scoped>
+.fixed {
+  position: sticky;
+  width: 5em;
+  left: 0;
+  top: auto;
+  z-index: 999;
+}
+
+td:not(.fixed) {
+  z-index: 0;
+}
+</style>
